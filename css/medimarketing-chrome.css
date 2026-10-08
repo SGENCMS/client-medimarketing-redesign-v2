@@ -6,13 +6,14 @@
   padding: .7rem 1.25rem; border-radius: 0 0 var(--r-control) var(--r-control);
   font: 600 var(--fs-small)/1 var(--font);
   color: var(--cta-ink); background: var(--cta-bg);
-  box-shadow: var(--shadow-glow);
+  box-shadow: none;
   transition: transform var(--t-fast) var(--ease);
 }
 .mm-skip:focus,
 .mm-skip:focus-visible {
   transform: translate(-50%, 0);
   outline: 2px solid var(--ink); outline-offset: 2px;
+  box-shadow: var(--shadow-glow);
   text-decoration: none;
 }
 
@@ -26,13 +27,21 @@
               padding var(--t-base) var(--ease);
 }
 .mm-header.scrolled {
-  background: color-mix(in srgb, var(--bg-2) 72%, transparent);
-  backdrop-filter: blur(18px) saturate(140%);
-  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  background: var(--bg-2);
   border-bottom: 1px solid var(--line);
   box-shadow: var(--shadow-elev);
   padding: 10px 0;
 }
+.mm-header::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+  pointer-events: none; opacity: 0;
+  background: linear-gradient(90deg, transparent 8%,
+    color-mix(in srgb, var(--glow) 55%, transparent) 50%, transparent 92%);
+  transition: opacity var(--t-base) var(--ease);
+}
+.mm-header.scrolled::after { opacity: 1; }
+:root { --mm-nav-maxw: 1320px; }
+.mm-header .mm-nav { max-width: var(--mm-nav-maxw); }
 .mm-nav { display: flex; align-items: center; gap: 24px; }
 .mm-logo { display: inline-flex; align-items: center; flex: none; }
 .mm-logo img {
@@ -86,8 +95,8 @@
 .mm-trigger[aria-expanded="true"] { color: var(--ink); background: var(--surface-2); border-color: var(--line); }
 .mm-trigger[aria-expanded="true"] .mm-caret { transform: rotate(180deg); }
 
-.mm-has-panel:hover > .mm-trigger { color: var(--ink); background: var(--surface-2); border-color: var(--line); }
-.mm-has-panel:hover > .mm-trigger .mm-caret { transform: rotate(180deg); }
+.mm-has-panel:not(.is-dismissed):hover > .mm-trigger { color: var(--ink); background: var(--surface-2); border-color: var(--line); }
+.mm-has-panel:not(.is-dismissed):hover > .mm-trigger .mm-caret { transform: rotate(180deg); }
 
 .mm-cta-desktop { margin-left: 10px; flex: none; }
 
@@ -124,6 +133,13 @@ html:not(.js) .mm-has-panel:focus-within > .mm-panel {
   transition: opacity var(--t-base) var(--ease), transform var(--t-base) var(--ease), visibility 0s;
 }
 .mm-has-panel.is-dismissed > .mm-panel { opacity: 0; visibility: hidden; pointer-events: none; }
+@media (hover: none) {
+  html.js .mm-has-panel:not(.is-open) > .mm-panel { opacity: 0; visibility: hidden; pointer-events: none; }
+  /* A tap leaves :hover on the trigger; the closed trigger keeps its resting look. */
+  html.js .mm-has-panel:not(.is-open) > .mm-trigger:not(:focus-visible) { color: var(--ink-2); background: transparent; border-color: transparent; }
+  html.js .mm-has-panel:not(.is-open) > .mm-trigger.is-current:not(:focus-visible) { color: var(--ink); }
+  html.js .mm-has-panel:not(.is-open) > .mm-trigger .mm-caret { transform: none; }
+}
 
 .mm-dropdown { left: 0; min-width: 268px; }
 .mm-dropdown ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
@@ -537,6 +553,7 @@ body.mm-no-scroll { overflow: hidden; }
   right: -8%; bottom: -60%; width: 60%; height: 200%;
   background: radial-gradient(50% 50% at 50% 50%, color-mix(in srgb, var(--glow) 22%, transparent), color-mix(in srgb, var(--accent) 8%, transparent) 45%, transparent 70%);
   filter: blur(30px);
+  transform: translateZ(0);
 }
 
 .mm-footer__lead-art {
@@ -623,7 +640,6 @@ body.mm-no-scroll { overflow: hidden; }
   .mm-nav { gap: 16px; }
   .mm-navlink, .mm-trigger { padding-inline: 10px; }
   .mm-navlink[aria-current="page"]::after, .mm-trigger.is-current::after { left: 10px; right: 10px; }
-  .mm-header .mm-logo img, .mm-header.scrolled .mm-logo img { height: auto; width: 300px; }
 }
 
 @media (max-width: 1180px) {
@@ -640,8 +656,6 @@ body.mm-no-scroll { overflow: hidden; }
 @media (max-width: 1100px) {
   .mm-links { gap: 2px; }
   .mm-navlink, .mm-trigger { padding-inline: 9px; }
-  .mm-header .mm-logo img, .mm-header.scrolled .mm-logo img { width: 228px; }
-  .mm-cta-desktop { margin-left: 4px; }
 }
 
 @media (max-width: 1040px) {
@@ -657,6 +671,26 @@ body.mm-no-scroll { overflow: hidden; }
       linear-gradient(180deg, color-mix(in srgb, var(--bg-3) 22%, transparent) 0%, transparent 28%, color-mix(in srgb, var(--bg-3) 88%, transparent) 100%);
   }
 }
+
+@media (min-width: 981px) {
+  .mm-nav {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    column-gap: 24px;
+  }
+  .mm-logo { justify-self: start; min-width: 0; max-width: 100%; }
+  .mm-header .mm-logo img,
+  .mm-header.scrolled .mm-logo img {
+    width: clamp(190px, calc(24vw - 40px), 288px); height: auto; max-width: 100%;
+    transition: width var(--t-base) var(--ease);
+  }
+  .mm-header.scrolled .mm-logo img { width: clamp(184px, calc(22vw - 40px), 264px); }
+  .mm-links { margin-left: 0; justify-self: center; }
+  .mm-cta-desktop { margin-left: 0; justify-self: end; }
+}
+@media (min-width: 981px) and (max-width: 1240px) { .mm-nav { column-gap: 16px; } }
+@media (min-width: 981px) and (max-width: 1100px) { .mm-nav { column-gap: 12px; } }
 
 @media (max-width: 980px) {
 
@@ -712,6 +746,7 @@ body.mm-no-scroll { overflow: hidden; }
   .mm-drawer,
   .mm-sticky-cta,
   .mm-panel,
+  .mm-panel *,
   .mm-caret,
   .mm-acc__panel,
   .mm-acc__btn .mm-caret,

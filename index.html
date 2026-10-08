@@ -147,11 +147,12 @@
 </aside>
 
 <main id="main">
-<section class="dio dh hv2-typographic">
+<section class="dio dh hv2-typographic hv2--photo">
     <div class="hv2-ground" aria-hidden="true"></div>
     <div class="hv2-bloom" aria-hidden="true"></div>
     <div class="hv2-vignette" aria-hidden="true"></div>
     <div class="hv2-grain" aria-hidden="true"></div>
+    <div class="hv2-photo" aria-hidden="true"><div class="hv2-photo__media"><img src="img/hero-clinician-tablet-1000.webp" srcset="img/hero-clinician-tablet-1000.webp 1000w, img/hero-clinician-tablet-2000.webp 2000w" sizes="(min-width: 981px) 190vh, (min-width: 628px) 1024px, 165vw" width="2000" height="1055" alt="" loading="eager" fetchpriority="high" decoding="async"></div></div>
 
     <div class="container">
       <div class="hv2-inner">
@@ -743,6 +744,7 @@
   function itemsOf(g)   { return Array.prototype.slice.call(panelOf(g).querySelectorAll('a[href]')); }
   function openGroup(g, focusFirst) {
     closeAllGroups(g); g.classList.remove('is-dismissed'); g.classList.add('is-open');
+    g.mmHoverOpened = false;
     triggerOf(g).setAttribute('aria-expanded', 'true');
     if (focusFirst) { var it = itemsOf(g); if (it.length) it[0].focus(); }
   }
@@ -755,13 +757,27 @@
   groups.forEach(function (g) {
     var trigger = triggerOf(g), items = itemsOf(g), closeTimer = null;
     function cancelClose() { if (closeTimer) { window.clearTimeout(closeTimer); closeTimer = null; } }
-    function scheduleClose() { cancelClose(); closeTimer = window.setTimeout(function () { closeGroup(g, false); }, HOVER_CLOSE_DELAY); }
-    g.addEventListener('pointerenter', function () { cancelClose(); g.classList.remove('is-dismissed'); openGroup(g, false); });
-    g.addEventListener('pointerleave', function () { g.classList.remove('is-dismissed'); scheduleClose(); });
+    /* While keyboard focus is on a panel link the menu stays open; focusout closes it. */
+    function scheduleClose() { cancelClose(); closeTimer = window.setTimeout(function () { if (!panelOf(g).contains(document.activeElement)) closeGroup(g, false); }, HOVER_CLOSE_DELAY); }
+    /* Hover intent is for a mouse only. A touch or pen tap also fires pointerenter and
+       pointerleave, so it is left to the click handler: first tap opens, second tap closes. */
+    g.addEventListener('pointerenter', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      cancelClose(); g.classList.remove('is-dismissed');
+      if (!g.classList.contains('is-open')) { openGroup(g, false); g.mmHoverOpened = true; }
+    });
+    g.addEventListener('pointerleave', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      g.classList.remove('is-dismissed'); scheduleClose();
+    });
     panelOf(g).addEventListener('pointerenter', cancelClose);
+    /* A click on a menu that hover just opened keeps it open; the next click closes it.
+       is-dismissed hides the panel even while the pointer still hovers it. */
     trigger.addEventListener('click', function (e) {
       e.preventDefault(); cancelClose();
-      if (g.classList.contains('is-open')) closeGroup(g, false); else openGroup(g, false);
+      if (!g.classList.contains('is-open')) openGroup(g, false);
+      else if (g.mmHoverOpened) g.mmHoverOpened = false;
+      else { closeGroup(g, false); g.classList.add('is-dismissed'); }
     });
     trigger.addEventListener('keydown', function (e) {
       if (e.key === 'ArrowDown' || e.key === 'Enter' || e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); openGroup(g, true); }
@@ -775,12 +791,17 @@
         else if (e.key === 'Home') { e.preventDefault(); items[0].focus(); }
         else if (e.key === 'End') { e.preventDefault(); items[items.length - 1].focus(); }
         else if (e.key === 'Escape') { e.preventDefault(); closeGroup(g, true); }
-        else if (e.key === 'Tab') { closeGroup(g, false); }
       });
     });
+    /* Tab walks the open panel's links; the menu closes when focus leaves the group (focusout). */
     g.addEventListener('focusout', function (e) { if (!g.contains(e.relatedTarget)) closeGroup(g, false); });
   });
   document.addEventListener('click', function (e) { if (!e.target.closest('.mm-has-panel')) closeAllGroups(null); });
+  /* WebKit sends no click to the document for a touch tap on plain content, so a touch or
+     pen press outside the menu closes it here. */
+  document.addEventListener('pointerdown', function (e) {
+    if (e.pointerType !== 'mouse' && !e.target.closest('.mm-has-panel')) closeAllGroups(null);
+  });
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
     groups.forEach(function (g) {
@@ -811,7 +832,9 @@
     document.body.classList.remove('mm-no-scroll');
     var finish = function () { closeTimer = null; drawer.hidden = true; overlay.hidden = true; };
     if (reduce) finish(); else closeTimer = window.setTimeout(finish, 360);
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
+    /* WebKit does not focus a tapped button, so a drawer opened by a tap returns focus to the burger. */
+    var back = (lastFocus && lastFocus !== document.body && lastFocus.focus) ? lastFocus : burger;
+    back.focus();
   }
   function isOpen() { return drawer && drawer.classList.contains('open'); }
   if (burger) burger.addEventListener('click', function () { isOpen() ? closeDrawer() : openDrawer(); });
