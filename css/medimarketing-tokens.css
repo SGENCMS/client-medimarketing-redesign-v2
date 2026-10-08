@@ -1,0 +1,168 @@
+
+
+:root {
+
+  --bg:          #0B425A;
+  --bg-2:        #082F40;
+  --bg-3:        #06222F;
+  --surface:     #0E3D52;
+  --surface-2:   rgba(255, 255, 255, 0.045);
+  --surface-3:   rgba(255, 255, 255, 0.028);
+  --card-bg:     #0E3D52;
+
+  --ink:         #EAF2F4;
+  --ink-2:       #A9C4CD;
+  --ink-3:       #6F93A0;
+
+  --accent:      #7FC4CB;
+  --accent-2:    #A6D8DD;
+  --glow:        #5FE0D8;
+  --on-accent:   #06222F;
+
+  --cta-bg:      #5FE0D8;
+  --cta-ink:     #06222F;
+
+  --grad-text:   linear-gradient(100deg, #5FE0D8 0%, #7FC4CB 60%, #5FB9C2 100%);
+  --grad-accent: linear-gradient(180deg, #5FE0D8, #7FC4CB);
+
+  --line:        rgba(159, 242, 240, 0.16);
+  --line-2:      rgba(234, 242, 244, 0.10);
+  --card-border: rgba(234, 242, 244, 0.10);
+  --divider:     rgba(255, 255, 255, 0.06);
+
+  --shadow-card: 0 1px 0 0 rgba(234, 242, 244, 0.06) inset, 0 24px 60px -28px rgba(0, 0, 0, 0.60), 0 4px 14px -8px rgba(0, 0, 0, 0.40);
+  --shadow-elev: 0 30px 80px -30px rgba(0, 0, 0, 0.55), 0 8px 24px -10px rgba(0, 0, 0, 0.50);
+  --shadow-glow: 0 0 0 1px rgba(95, 224, 216, 0.45), 0 12px 34px -8px rgba(95, 224, 216, 0.50), 0 0 50px -6px rgba(95, 224, 216, 0.45);
+  --inset-hi:    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+
+  --atmos-stroke: rgba(127, 196, 203, 0.14);
+  --grain-opacity: 0.05;
+
+  --font:  'Gotham', 'Montserrat', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --body:  'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+
+  --fs-eyebrow: 0.75rem;
+  --fs-small:   0.8125rem;
+  --fs-body:    clamp(1rem, 0.25vw + 0.95rem, 1.125rem);
+  --fs-lead:    clamp(1.125rem, 0.6vw + 1rem, 1.25rem);
+  --fs-h3:      clamp(1.2rem, 0.6vw + 1rem, 1.375rem);
+  --fs-h2:      clamp(2.1rem, 4.6vw, 3.6rem);
+  --fs-h1:      clamp(2.6rem, 5vw, 4rem);
+  --fs-hero:    clamp(3.2rem, 8vw, 7rem);
+  --fs-stat:    clamp(3.4rem, 9vw, 7rem);
+  --fs-display: clamp(2.6rem, 6.6vw, 5.4rem);
+
+  --s-0:   4px;
+  --s-1:   8px;
+  --s-2:   12px;
+  --s-3:   16px;
+  --s-4:   24px;
+  --s-5:   32px;
+  --s-6:   40px;
+  --s-7:   48px;
+  --s-8:   64px;
+  --s-9:   80px;
+  --s-10:  96px;
+  --s-11:  128px;
+  --s-12:  160px;
+
+  --maxw:   1200px;
+  --readw:  68ch;
+  --pad:    clamp(var(--s-9), 9vw, var(--s-11));
+  --pad-sm: clamp(var(--s-6), 5vw, var(--s-8));
+  --pad-lg: clamp(var(--s-10), 13vw, var(--s-12));
+
+  --r-surface: 14px;
+  --r-control: 8px;
+  --r-pill:    999px;
+
+  --ease:     cubic-bezier(0.16, 0.84, 0.34, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.30, 1);
+  --t-fast:   0.18s;
+  --t-base:   0.35s;
+  --t-slow:   0.8s;
+
+  --ok:    #5FE0D8;
+  --gold:  #F1C75A;
+}
+
+.surface-dark,
+[data-surface="dark"] {
+  --bg:          #0B425A;
+  --bg-2:        #082F40;
+  --bg-3:        #06222F;
+  --surface:     #0E3D52;
+  --surface-2:   rgba(255, 255, 255, 0.045);
+  --surface-3:   rgba(255, 255, 255, 0.028);
+  --card-bg:     #0E3D52;
+
+  --ink:         #EAF2F4;
+  --ink-2:       #A9C4CD;
+  --ink-3:       #6F93A0;
+
+  --accent:      #7FC4CB;
+  --accent-2:    #A6D8DD;
+  --glow:        #5FE0D8;
+  --on-accent:   #06222F;
+
+  --cta-bg:      #5FE0D8;
+  --cta-ink:     #06222F;
+
+  --grad-text:   linear-gradient(100deg, #5FE0D8 0%, #7FC4CB 60%, #5FB9C2 100%);
+  --grad-accent: linear-gradient(180deg, #5FE0D8, #7FC4CB);
+
+  --line:        rgba(159, 242, 240, 0.16);
+  --line-2:      rgba(234, 242, 244, 0.10);
+  --card-border: rgba(234, 242, 244, 0.10);
+  --divider:     rgba(255, 255, 255, 0.06);
+
+  --shadow-card: 0 1px 0 0 rgba(234, 242, 244, 0.06) inset, 0 24px 60px -28px rgba(0, 0, 0, 0.60), 0 4px 14px -8px rgba(0, 0, 0, 0.40);
+  --shadow-elev: 0 30px 80px -30px rgba(0, 0, 0, 0.55), 0 8px 24px -10px rgba(0, 0, 0, 0.50);
+  --shadow-glow: 0 0 0 1px rgba(95, 224, 216, 0.45), 0 12px 34px -8px rgba(95, 224, 216, 0.50), 0 0 50px -6px rgba(95, 224, 216, 0.45);
+
+  --atmos-stroke: rgba(127, 196, 203, 0.14);
+}
+
+.surface-light {
+  --bg:          #F3F7F8;
+  --bg-2:        #E8F0F1;
+  --bg-3:        #FFFFFF;
+  --surface:     #FFFFFF;
+  --surface-2:   #EAF2F3;
+  --surface-3:   #F3F7F8;
+  --card-bg:     #FFFFFF;
+
+  --ink:         #0B425A;
+  --ink-2:       #4E6E78;
+  --ink-3:       #6E8A92;
+
+  --accent:      #2E6A71;
+  --accent-2:    #2E6A71;
+  --glow:        #2E6A71;
+  --on-accent:   #FFFFFF;
+
+  --cta-bg:      #0B425A;
+  --cta-ink:     #FFFFFF;
+
+  --grad-text:   linear-gradient(100deg, #2E6A71, #0B425A);
+  --grad-accent: linear-gradient(180deg, #2E6A71, #0B425A);
+
+  --line:        rgba(11, 66, 90, 0.12);
+  --line-2:      rgba(11, 66, 90, 0.16);
+  --card-border: rgba(11, 66, 90, 0.08);
+  --divider:     rgba(11, 66, 90, 0.10);
+
+  --shadow-card: 0 1px 0 0 rgba(255, 255, 255, 0.70) inset, 0 24px 50px -30px rgba(11, 66, 90, 0.35);
+  --shadow-elev: 0 1px 0 0 rgba(255, 255, 255, 0.80) inset, 0 36px 70px -34px rgba(11, 66, 90, 0.50);
+  --shadow-glow: 0 10px 30px -10px rgba(11, 66, 90, 0.30);
+
+  --atmos-stroke: rgba(11, 66, 90, 0.10);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --t-fast: 0.001ms;
+    --t-base: 0.001ms;
+    --t-slow: 0.001ms;
+  }
+}
