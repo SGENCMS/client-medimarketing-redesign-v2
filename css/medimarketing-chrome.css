@@ -19,7 +19,8 @@
 
 .mm-header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  padding: 18px 0; border-bottom: 1px solid transparent;
+  --mm-head-pad: 18px; --mm-mega-gap: 12px;
+  padding: var(--mm-head-pad) 0; border-bottom: 1px solid transparent;
   transition: background var(--t-base) var(--ease),
               backdrop-filter var(--t-base) var(--ease),
               box-shadow var(--t-base) var(--ease),
@@ -27,10 +28,11 @@
               padding var(--t-base) var(--ease);
 }
 .mm-header.scrolled {
+  --mm-head-pad: 10px;
   background: var(--bg-2);
   border-bottom: 1px solid var(--line);
   box-shadow: var(--shadow-elev);
-  padding: 10px 0;
+  padding: var(--mm-head-pad) 0;
 }
 .mm-header::after {
   content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
@@ -158,14 +160,26 @@ html:not(.js) .mm-has-panel:focus-within > .mm-panel {
 .mm-dropdown a:hover .t,
 .mm-dropdown a:focus-visible .t { color: var(--accent-2); }
 
+/* The mega panel hangs from the nav row, so it clears the header's bottom padding and border and
+   then leaves --mm-mega-gap (set on the header) of space below the bar, whether the header is at rest or scrolled.
+   The panel clips its own overflow, so the hover bridge across that space belongs to the menu's
+   list item: it starts at the nav row's bottom (where the trigger ends) and reaches 2px into the
+   panel, and it exists only while the menu is hovered or open, so it never opens the menu. */
 .mm-mega {
+  top: calc(100% + var(--mm-head-pad) + 1px + var(--mm-mega-gap));
   left: 50%; transform: translateX(-50%) translateY(8px);
 
   width: min(1240px, calc(100vw - 48px));
 
   padding: 0; overflow: hidden;
 
-  max-height: min(76vh, 560px);
+  max-height: min(76vh, 560px, calc(100vh - 100px));
+}
+.mm-has-mega:not(.is-dismissed):hover::after,
+.mm-has-mega.is-open::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 100%;
+  height: calc(var(--mm-head-pad) + 1px + var(--mm-mega-gap) + 2px);
+  pointer-events: auto;
 }
 .mm-has-panel:hover > .mm-mega,
 .mm-has-panel.is-open > .mm-mega,
@@ -584,6 +598,9 @@ body.mm-no-scroll { overflow: hidden; }
   justify-self: end;
 }
 .mm-footer__lead-actions .btn { white-space: nowrap; }
+/* The guarantee chip in the footer sits over the footer photo, so its tint is mixed into the section colour
+   (not see-through) and its text keeps its contrast whatever the photo shows. */
+.mm-footer .guarantee-chip { background: color-mix(in srgb, var(--accent) 12%, var(--bg-2)); }
 .mm-footer__lead-actions .btn-lg { padding: 1.05rem 2rem; }
 
 .mm-footer__divide { height: 1px; background: var(--divider); border: 0; margin: 0; }
@@ -660,7 +677,7 @@ body.mm-no-scroll { overflow: hidden; }
 
 @media (max-width: 1040px) {
 
-  .mm-mega { width: min(620px, calc(100vw - 32px)); max-height: min(88vh, 740px); }
+  .mm-mega { width: min(620px, calc(100vw - 32px)); max-height: min(88vh, 740px, calc(100vh - 100px)); }
   .mm-mega__layout { grid-template-columns: 1fr; }
   .mm-mega__feature { min-height: 150px; padding: 22px 24px; }
   .mm-mega__grid { grid-template-columns: 1fr 1fr; }

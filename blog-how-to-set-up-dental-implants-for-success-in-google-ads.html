@@ -660,6 +660,63 @@
     });
   });
 })();
+
+/* Home, "Patient acquisition": the specialty selector. The buttons become an ARIA tab list (roving
+   tabindex; arrow keys, Home and End move between them); each shows its own panel. Without JS the
+   panels all stay visible. Does nothing on a page without .dkpi--select. */
+(function () {
+  var root = document.querySelector('.dkpi--select'); if (!root) return;
+  var list = root.querySelector('.dka__tabs');
+  var tabs = Array.prototype.slice.call(root.querySelectorAll('.dka__tab'));
+  var panels = Array.prototype.slice.call(root.querySelectorAll('.dka__panel'));
+  if (!list || tabs.length !== panels.length) return;
+  list.setAttribute('role', 'tablist'); list.hidden = false;
+  tabs.forEach(function (t, i) { t.setAttribute('role', 'tab'); panels[i].setAttribute('role', 'tabpanel'); });
+  function select(i, focus) {
+    tabs.forEach(function (t, k) {
+      var on = k === i;
+      t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; panels[k].hidden = !on;
+    });
+    if (focus) tabs[i].focus();
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { select(i, false); });
+    t.addEventListener('keydown', function (ev) {
+      var n = tabs.length, k = null;
+      if (ev.key === 'ArrowRight' || ev.key === 'ArrowDown') k = (i + 1) % n;
+      else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowUp') k = (i - 1 + n) % n;
+      else if (ev.key === 'Home') k = 0;
+      else if (ev.key === 'End') k = n - 1;
+      if (k !== null) { ev.preventDefault(); select(k, true); }
+    });
+  });
+  select(0, false);
+  root.classList.add('is-ready');
+
+  /* Each panel's photo is lazy, so at page load none of them is fetched, and the open panel's photo
+     loads as the section nears the screen. The hidden panels' photos would only load when their tab
+     is chosen, leaving the panel empty for a moment; so once the section is within 600px of the
+     screen, or a tab is hovered or focused, they all switch to eager and load (and decode) then. */
+  var imgs = panels.map(function (p) { return p.querySelector('.dka__media img'); }).filter(Boolean);
+  var warmed = false;
+  function warm() {
+    if (warmed) return; warmed = true;
+    imgs.forEach(function (img) {
+      img.loading = 'eager';
+      if (img.decode) img.decode().catch(function () {});
+    });
+  }
+  list.addEventListener('pointerover', warm);
+  list.addEventListener('focusin', warm);
+  if ('IntersectionObserver' in window) {
+    var near = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) { near.disconnect(); warm(); }
+    }, { rootMargin: '600px 0px 600px 0px' });
+    near.observe(root);
+  } else {
+    window.addEventListener('load', warm);
+  }
+})();
 </script>
 
 </body>

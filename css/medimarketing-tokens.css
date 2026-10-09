@@ -12,7 +12,7 @@
 
   --ink:         #EAF2F4;
   --ink-2:       #A9C4CD;
-  --ink-3:       #6F93A0;
+  --ink-3:       #94B3BD;  /* was #6F93A0; lifted to 4.5:1 on the dark grounds (9 October 2026) */
 
   --accent:      #7FC4CB;
   --accent-2:    #A6D8DD;
@@ -98,7 +98,7 @@
 
   --ink:         #EAF2F4;
   --ink-2:       #A9C4CD;
-  --ink-3:       #6F93A0;
+  --ink-3:       #94B3BD;  /* was #6F93A0; lifted to 4.5:1 on the dark grounds (9 October 2026) */
 
   --accent:      #7FC4CB;
   --accent-2:    #A6D8DD;
@@ -134,7 +134,7 @@
 
   --ink:         #0B425A;
   --ink-2:       #4E6E78;
-  --ink-3:       #6E8A92;
+  --ink-3:       #567079;  /* was #6E8A92; darkened to 4.5:1 on the light ground (9 October 2026) */
 
   --accent:      #2E6A71;
   --accent-2:    #2E6A71;

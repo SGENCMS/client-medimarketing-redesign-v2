@@ -285,7 +285,7 @@
     </div>
   </section>
 
-  <section class="dio dfcp dio--dark capability-deep-dive">
+  <section class="dio dfcp dfcp--b-versus dio--dark capability-deep-dive">
     <div class="dio__darkbed" aria-hidden="true"></div>
     <div class="dio__glow" aria-hidden="true"></div>
 
@@ -296,8 +296,8 @@
         <p>You search "glasses near me," tap a result, and stare at a blank screen. One second. Two. By 7.8 seconds the patient is gone. Here is the same moment on a slow competitor site versus a site we build.</p>
       </div>
 
-      <div class="dfcp__grid">
-        <article class="dfcp__card glass reveal" data-fcp data-ndl="-66">
+      <div class="dfcp__grid dfcp__versus">
+        <article class="dfcp__card dfcp__half dfcp__half--bad reveal" data-fcp data-ndl="-66">
           <div class="dfcp__card-head">
             <span class="dfcp__who">A slow competitor site</span>
             <span class="dfcp__flag bad">Too slow</span>
@@ -306,7 +306,7 @@
           <div class="dfcp__gauge">
             <svg viewBox="0 0 200 120" role="img" aria-label="First Contentful Paint of 7.8 seconds, flagged slow">
               <path class="track" d="M20,100 A80,80 0 0 1 180,100" fill="none" stroke-width="14" stroke-linecap="round"/>
-              <path class="fill-bad" d="M20,100 A80,80 0 0 1 33,61" fill="none" stroke-width="14" stroke-linecap="round"/>
+              <path class="fill-bad" d="M20,100 A80,80 0 0 1 33,61" fill="none" stroke-width="14" stroke-linecap="round" pathLength="1"/>
               <g class="ticks" stroke-width="2">
                 <line x1="20" y1="100" x2="30" y2="100"/><line x1="100" y1="20" x2="100" y2="30"/><line x1="180" y1="100" x2="170" y2="100"/>
               </g>
@@ -320,7 +320,9 @@
           </div>
         </article>
 
-        <article class="dfcp__card glass reveal" data-fcp data-ndl="72" data-d="1">
+        <span class="dfcp__vs reveal" aria-hidden="true"></span>
+
+        <article class="dfcp__card dfcp__half dfcp__half--good reveal" data-fcp data-ndl="72" data-d="1">
           <div class="dfcp__card-head">
             <span class="dfcp__who">A site we build on SGEN CMS</span>
             <span class="dfcp__flag good">Built for speed</span>
@@ -329,7 +331,7 @@
           <div class="dfcp__gauge">
             <svg viewBox="0 0 200 120" role="img" aria-label="First Contentful Paint of 0.9 seconds, fast">
               <path class="track" d="M20,100 A80,80 0 0 1 180,100" fill="none" stroke-width="14" stroke-linecap="round"/>
-              <path class="fill-good" d="M20,100 A80,80 0 0 1 171,64" fill="none" stroke-width="14" stroke-linecap="round"/>
+              <path class="fill-good" d="M20,100 A80,80 0 0 1 171,64" fill="none" stroke-width="14" stroke-linecap="round" pathLength="1"/>
               <g class="ticks" stroke-width="2">
                 <line x1="20" y1="100" x2="30" y2="100"/><line x1="100" y1="20" x2="100" y2="30"/><line x1="180" y1="100" x2="170" y2="100"/>
               </g>
@@ -1333,6 +1335,63 @@
       if (ans) ans.inert = open;
     });
   });
+})();
+
+/* Home, "Patient acquisition": the specialty selector. The buttons become an ARIA tab list (roving
+   tabindex; arrow keys, Home and End move between them); each shows its own panel. Without JS the
+   panels all stay visible. Does nothing on a page without .dkpi--select. */
+(function () {
+  var root = document.querySelector('.dkpi--select'); if (!root) return;
+  var list = root.querySelector('.dka__tabs');
+  var tabs = Array.prototype.slice.call(root.querySelectorAll('.dka__tab'));
+  var panels = Array.prototype.slice.call(root.querySelectorAll('.dka__panel'));
+  if (!list || tabs.length !== panels.length) return;
+  list.setAttribute('role', 'tablist'); list.hidden = false;
+  tabs.forEach(function (t, i) { t.setAttribute('role', 'tab'); panels[i].setAttribute('role', 'tabpanel'); });
+  function select(i, focus) {
+    tabs.forEach(function (t, k) {
+      var on = k === i;
+      t.setAttribute('aria-selected', on ? 'true' : 'false'); t.tabIndex = on ? 0 : -1; panels[k].hidden = !on;
+    });
+    if (focus) tabs[i].focus();
+  }
+  tabs.forEach(function (t, i) {
+    t.addEventListener('click', function () { select(i, false); });
+    t.addEventListener('keydown', function (ev) {
+      var n = tabs.length, k = null;
+      if (ev.key === 'ArrowRight' || ev.key === 'ArrowDown') k = (i + 1) % n;
+      else if (ev.key === 'ArrowLeft' || ev.key === 'ArrowUp') k = (i - 1 + n) % n;
+      else if (ev.key === 'Home') k = 0;
+      else if (ev.key === 'End') k = n - 1;
+      if (k !== null) { ev.preventDefault(); select(k, true); }
+    });
+  });
+  select(0, false);
+  root.classList.add('is-ready');
+
+  /* Each panel's photo is lazy, so at page load none of them is fetched, and the open panel's photo
+     loads as the section nears the screen. The hidden panels' photos would only load when their tab
+     is chosen, leaving the panel empty for a moment; so once the section is within 600px of the
+     screen, or a tab is hovered or focused, they all switch to eager and load (and decode) then. */
+  var imgs = panels.map(function (p) { return p.querySelector('.dka__media img'); }).filter(Boolean);
+  var warmed = false;
+  function warm() {
+    if (warmed) return; warmed = true;
+    imgs.forEach(function (img) {
+      img.loading = 'eager';
+      if (img.decode) img.decode().catch(function () {});
+    });
+  }
+  list.addEventListener('pointerover', warm);
+  list.addEventListener('focusin', warm);
+  if ('IntersectionObserver' in window) {
+    var near = new IntersectionObserver(function (entries) {
+      if (entries.some(function (e) { return e.isIntersecting; })) { near.disconnect(); warm(); }
+    }, { rootMargin: '600px 0px 600px 0px' });
+    near.observe(root);
+  } else {
+    window.addEventListener('load', warm);
+  }
 })();
 </script>
 

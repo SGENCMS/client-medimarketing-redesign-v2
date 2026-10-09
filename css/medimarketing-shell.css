@@ -60,14 +60,33 @@
       color-mix(in srgb, var(--accent) 8%, transparent), transparent 58%),
     linear-gradient(168deg, var(--bg-2) 0%, var(--bg) 44%, var(--bg-3) 100%);
 }
+/* Background pattern (was a 64px grid): a hexagon "connections" line drawing in the accent colour
+   (img/hex-connections.webp: --accent's value baked in, transparent elsewhere; re-tint it if --accent
+   changes), kept faint with --hex-a. It is a background image, not a CSS mask image, so it also shows
+   when a page is opened from disk (browsers block url() masks there). The drawing has hexagons down
+   both sides and an empty middle; its lower half is the upper half mirrored on a row of horizontal
+   edges, so it repeats downwards without a seam. It is sized to the section's width and centred; on
+   phones one side's hexagons are stretched across the screen instead (--hex-pos 0 0), since the
+   centred drawing would show only the empty middle there. Source: owner-supplied stock banner
+   (4350031_10068.jpg); licence and credit to be confirmed (OPEN-ITEMS). */
+:root { --hex-a: .12; --hex-size: max(100%, 1100px); --hex-pos: 50% 0; --hex-clear: 56px; }
+@media (max-width: 767px) { :root { --hex-size: 290%; --hex-pos: 0 0; } }
 .dio__darkbed::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5;
-  background:
-    linear-gradient(to right, color-mix(in srgb, var(--line-2) 60%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--line-2) 60%, transparent) 1px, transparent 1px);
-  background-size: 64px 64px, 64px 64px;
-  mask-image: radial-gradient(120% 120% at 50% 0, rgba(0,0,0,1) 0%, transparent 72%);
-  -webkit-mask-image: radial-gradient(120% 120% at 50% 0, rgba(0,0,0,1) 0%, transparent 72%);
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: var(--hex-a);
+  background: url(../img/hex-connections.webp) var(--hex-pos) / var(--hex-size) auto repeat-y;
+  -webkit-mask-image: radial-gradient(120% 120% at 50% 0, var(--bg) 0%, transparent 72%);
+          mask-image: radial-gradient(120% 120% at 50% 0, var(--bg) 0%, transparent 72%);
+}
+/* The first section of a page runs under the fixed header, which is transparent at the top of the
+   page, so the pattern stays clear of the nav links (--hex-clear) and fades in below them. The
+   typographic hero does the same (.hv2-typographic .hv2-ground::after). */
+.dbf .dio__darkbed::after {
+  -webkit-mask-image: linear-gradient(180deg, transparent var(--hex-clear), var(--bg) calc(var(--hex-clear) + 80px)),
+                      radial-gradient(120% 120% at 50% 0, var(--bg) 0%, transparent 72%);
+  -webkit-mask-composite: source-in;
+          mask-image: linear-gradient(180deg, transparent var(--hex-clear), var(--bg) calc(var(--hex-clear) + 80px)),
+                      radial-gradient(120% 120% at 50% 0, var(--bg) 0%, transparent 72%);
+          mask-composite: intersect;
 }
 .dio--dark .glass { background: color-mix(in srgb, var(--bg-2) 72%, transparent); }
 .dio--dark .dio__seam { background: linear-gradient(180deg, transparent, var(--bg-3)); }
@@ -135,7 +154,7 @@ body { background: var(--bg-3); }
 .dio-crumb a { color: var(--ink-2); transition: color var(--t-fast) var(--ease); }
 .dio-crumb a:hover { color: var(--accent-2); text-decoration: none; }
 .dio-crumb .sep { color: var(--ink-3); }
-.dio-crumb [aria-current] { color: var(--accent-2); }
+.dio-crumb [aria-current] { color: color-mix(in srgb, var(--accent-2) 70%, var(--ink)); }
 
 .s-head { max-width: 720px; margin-bottom: clamp(34px, 4.6vw, 54px); }
 .s-head.center { margin-inline: auto; text-align: center; }
@@ -146,6 +165,10 @@ body { background: var(--bg-3); }
 .s-head h2 { font: 800 var(--fs-h2)/1.05 var(--font); letter-spacing: -.02em; color: var(--ink); margin: 0 0 14px; }
 .s-head h2 .grad { background: var(--grad-text); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
 .s-head p { font: 400 var(--fs-lead)/1.55 var(--body); color: var(--ink-2); max-width: 58ch; }
+/* Two section intros sit over brighter glows (the proof section's, and the speed section's on phones); their
+   copy is lifted towards --ink so it keeps 4.5:1 there. Measured 9 October 2026. */
+.persona-proof .s-head p { color: color-mix(in srgb, var(--ink-2) 60%, var(--ink)); }
+.dfcp .s-head p { color: color-mix(in srgb, var(--ink-2) 40%, var(--ink)); }
 .s-head.center p { margin-inline: auto; }
 
 .dh { min-height: 100vh; display: flex; align-items: center;
@@ -210,7 +233,7 @@ body { background: var(--bg-3); }
 
 .dh__scrollcue { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); z-index: 4;
   display: inline-flex; flex-direction: column; align-items: center; gap: 8px;
-  font: 600 .68rem/1 var(--body); letter-spacing: .22em; text-transform: uppercase; color: var(--ink-3); }
+  font: 600 .68rem/1 var(--body); letter-spacing: .22em; text-transform: uppercase; color: color-mix(in srgb, var(--ink-2) 60%, var(--ink-3)); }
 .dh__scrollcue .line { width: 1px; height: 38px; background: linear-gradient(180deg, var(--accent), transparent); }
 @media (prefers-reduced-motion: no-preference) {
   .dh__scrollcue .line { animation: dio-cue 2s var(--ease) infinite; transform-origin: top; }
@@ -255,6 +278,71 @@ body { background: var(--bg-3); }
   .dpress__track[data-clone] { display: none; }
 }
 
+/* Home's press band (option A, 9 October 2026). The other pages keep the .dpress strip above. */
+/* Press marks: every logo as one light mark on the dark band. Logos drawn in ink on a clear
+   ground become a white silhouette; the two filled marks (ABC's disc, Google News's card) are
+   inverted instead, so their letters stay readable. Each logo gets its own height so the wide
+   wordmarks and the square marks carry about the same visual weight. */
+.dpm { display: block; flex: none; width: auto; height: calc(var(--mark, 40px) * var(--k, .8));
+  max-width: 100%; object-fit: contain;
+  filter: brightness(0) invert(1); opacity: .8;
+  transition: opacity var(--t-base) var(--ease), transform var(--t-base) var(--ease); }
+.dpm--abc, .dpm--gn { filter: grayscale(1) invert(1) brightness(1.7) contrast(1.3); }
+.dpm--fox { --k: .7; }  .dpm--nbc { --k: .94; } .dpm--cbs { --k: .68; } .dpm--abc { --k: .8; }
+.dpm--gn  { --k: .78; } .dpm--dj  { --k: .8; }  .dpm--yf  { --k: .68; } .dpm--mw  { --k: 1.02; }
+.dpm--bz  { --k: .46; }
+
+/* Option A, ticker band: one full-width band framed by fading hairlines. The label sits at the
+   left behind a divider, the marks run through the middle, and the proof line closes the band
+   at the right as a pill. Below 1024px the label and pill share the top row; on a phone all
+   three stack. */
+/* The band sits flush on the section after it: no space below its bottom hairline. */
+.dpress--ticker { padding: clamp(28px, 4.4vw, 56px) 0 0; }
+.dpa { position: relative;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--bg-3) 30%, transparent), color-mix(in srgb, var(--bg-2) 62%, transparent));
+  box-shadow: 0 30px 60px -40px var(--bg-3); }
+.dpa::before, .dpa::after { content: ""; position: absolute; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent) 42%, transparent) 30%, color-mix(in srgb, var(--accent) 42%, transparent) 70%, transparent); }
+.dpa::before { top: 0; } .dpa::after { bottom: 0; }
+.dpa__row { max-width: 1320px; display: grid; grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: "label mq line"; align-items: center; gap: clamp(18px, 2.6vw, 36px);
+  padding-block: clamp(18px, 2vw, 24px); }
+.dpa__label { grid-area: label; display: inline-flex; align-items: center; gap: .7em; padding-right: clamp(18px, 2.6vw, 36px);
+  border-right: 1px solid var(--line); align-self: stretch;
+  font: 700 var(--fs-eyebrow)/1 var(--body); letter-spacing: .2em; text-transform: uppercase; color: var(--ink-2); white-space: nowrap; }
+.dpa__label::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--glow); box-shadow: 0 0 10px 1px var(--glow); }
+.dpa__marquee { grid-area: mq; position: relative; overflow: hidden; min-width: 0; --mark: clamp(30px, 3vw, 40px);
+  -webkit-mask-image: linear-gradient(90deg, transparent, var(--ink) 8%, var(--ink) 92%, transparent);
+          mask-image: linear-gradient(90deg, transparent, var(--ink) 8%, var(--ink) 92%, transparent); }
+.dpa__lane { display: flex; width: max-content; animation: dpa-scroll 64s linear infinite; }
+.dpa__track, .dpa__set { display: flex; flex: none; align-items: center; }
+.dpa__track { padding-block: 10px; }
+.dpa__set .dpm { margin-right: clamp(40px, 4.6vw, 68px); }
+.dpa__marquee:hover .dpa__lane { animation-play-state: paused; }
+.dpa__marquee .dpm:hover { opacity: 1; transform: translateY(-2px); }
+@keyframes dpa-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.dpa__line { grid-area: line; margin: 0; padding: 10px 16px; border-radius: var(--r-pill); white-space: nowrap;
+  font: 500 var(--fs-small)/1 var(--body); color: var(--ink-2);
+  background: color-mix(in srgb, var(--accent) 9%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 34%, transparent); }
+.dpa__line b { font-weight: 700; color: var(--glow); }
+@media (max-width: 1023px) {
+  .dpa__row { grid-template-columns: 1fr auto; grid-template-areas: "label line" "mq mq"; row-gap: 14px; }
+  .dpa__label { border-right: 0; padding-right: 0; }
+}
+@media (max-width: 600px) {
+  .dpa__row { grid-template-columns: minmax(0, 1fr); grid-template-areas: "label" "mq" "line"; justify-items: center; text-align: center; }
+  .dpa__marquee { width: 100%; --mark: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dpa__lane { animation: none; width: 100%; }
+  .dpa__track { width: 100%; }
+  .dpa__track[aria-hidden], .dpa__set[aria-hidden] { display: none; }
+  .dpa__set { flex: 1; flex-wrap: wrap; justify-content: center; row-gap: 18px; }
+  .dpa__marquee { -webkit-mask-image: none; mask-image: none; }
+  .dpa__set .dpm { margin-inline: clamp(14px, 2vw, 24px); }
+}
+
 .dstat { padding-block: var(--pad); }
 .dstat .dio__darkbed { --dark-bloom: 50% 0%; }
 .dstat .container { position: relative; z-index: 1; }
@@ -279,6 +367,49 @@ body { background: var(--bg-3); }
 .dstat__chip b { color: var(--accent-2); }
 .dstat__chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--glow); box-shadow: 0 0 10px var(--glow); }
 
+/* Home's numbers (option A, 9 October 2026): .dstat--split. The other pages keep the .dstat cards above.
+   The numbers count up from zero through the shared .count[data-to] script in shell-tail.html. */
+/* Option A, editorial split: the heading reads on the left; the three numbers stack on the right as
+   a ruled list, each row opened by a glowing tick, with a teal line drawn under it as it comes in. */
+.dstat--split .dsa { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(32px, 6vw, 96px); align-items: center; }
+.dsa__head .eyebrow { margin-bottom: 16px; }
+.dsa__head h2 { font: 800 var(--fs-h2)/1.05 var(--font); letter-spacing: -.02em; color: var(--ink); margin: 0 0 16px; }
+.dsa__head h2 .grad { background: var(--grad-text); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; color: transparent; }
+.dsa__head p { font: 400 var(--fs-lead)/1.55 var(--body); color: var(--ink-2); max-width: 40ch; margin: 0; }
+.dsa__list { border-top: 1px solid var(--line); }
+.dsa__row { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 20px;
+  padding: clamp(18px, 2.4vw, 28px) 0 clamp(18px, 2.4vw, 28px) clamp(24px, 2.6vw, 34px); border-bottom: 1px solid var(--line); }
+.dsa__row::before { content: ""; position: absolute; left: 2px; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 50%;
+  background: var(--glow); box-shadow: 0 0 12px 1px var(--glow); }
+.dsa__row::after { content: ""; position: absolute; left: 0; bottom: -1px; height: 1px; width: 0;
+  background: linear-gradient(90deg, var(--glow), color-mix(in srgb, var(--accent) 40%, transparent) 60%, transparent);
+  transition: width 1.2s var(--ease-out) .25s; }
+.dsa__row.in::after { width: 100%; }
+.dstat--split .dsa__row .dstat__big { font-size: clamp(3rem, 6.2vw, 5.6rem); }
+.dsa__lbl { font: 600 var(--fs-body)/1.3 var(--font); color: var(--ink); text-align: right; }
+@media (max-width: 900px) {
+  .dstat--split .dsa { grid-template-columns: minmax(0, 1fr); gap: clamp(28px, 6vw, 44px); }
+}
+@media (max-width: 479px) {
+  .dsa__row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .dsa__row::before { top: clamp(30px, 9vw, 40px); }
+  .dsa__lbl { text-align: left; }
+  .dstat--split .dsa__row .dstat__big { font-size: clamp(3rem, 16vw, 3.8rem); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .dsa__row::after { width: 100%; transition: none; }
+}
+/* A tapered hairline closes the numbers on Home, on the boundary with the next section: 2px at
+   its middle, narrowing to nothing at both ends, in the accent and fading out towards the ends. */
+.dstat--split::after {
+  content: ""; position: absolute; z-index: 1; pointer-events: none;
+  left: 50%; bottom: 0; width: min(1180px, 88%); height: 2px; transform: translateX(-50%);
+  background: linear-gradient(90deg, transparent,
+    color-mix(in srgb, var(--accent) 35%, transparent) 22%, color-mix(in srgb, var(--glow) 75%, transparent) 50%,
+    color-mix(in srgb, var(--accent) 35%, transparent) 78%, transparent);
+  clip-path: polygon(0 50%, 50% 0, 100% 50%, 50% 100%);
+}
+
 .dkpi { padding-block: var(--pad); }
 .dkpi .container { position: relative; z-index: 1; }
 .dkpi__grid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(18px, 2.6vw, 28px); align-items: stretch; }
@@ -296,6 +427,143 @@ body { background: var(--bg-3); }
 .dkpi__lever b { color: var(--accent); }
 .dkpi__num { font: 900 clamp(1.5rem,2vw,1.9rem)/1 var(--font); color: var(--accent); }
 
+/* Home, "Patient acquisition": the specialty selector (.dkpi--select). The heading on the left with
+   the nine choices under it as a tab list; one panel on the right shows the chosen specialty as the
+   search a patient types, a photo of that kind of practice, then its name, line and link. Without JS
+   the tab list is not shown and all nine panels sit in a grid. Everything here is scoped to
+   .dkpi--select, so the other pages' .dkpi sections are untouched. The section fits one screen, so its
+   padding follows the screen's height. */
+.dkpi--select { padding-block: clamp(40px, 7vh, 96px); }
+.dkpi--select .ico-search, .dkpi--select .ico-grid {
+  width: 1em; height: 1em; flex: none; fill: none; stroke: var(--accent-2); stroke-width: 2; stroke-linecap: round; }
+.dkpi--select .ico-grid { stroke-width: 1.7; }
+.dkpi--select .dkx-ico { display: grid; place-items: center; flex: none; border-radius: 10px;
+  background: color-mix(in srgb, var(--accent) 11%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent); box-shadow: var(--inset-hi); }
+/* the site's specialty icons are dark glyphs; the mega menu's own filter turns them teal */
+.dkpi--select .dkx-ico img { width: min(24px, 60%); height: auto; filter: brightness(0) saturate(100%) invert(82%) sepia(20%) saturate(640%) hue-rotate(140deg) brightness(101%) contrast(94%); }
+.dkpi--select .dkx-ico svg { width: 50%; height: 50%; }
+
+.dkpi--select .dka { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: clamp(32px, 5vw, 76px); align-items: center; }
+/* The photo panel sits on the left and the heading with the specialty buttons on the right. The source
+   order stays heading, buttons, panel, so the reading order, heading order and Tab order are unchanged;
+   where the layout is one column (narrow screens, no JS) the heading stays above the panel. */
+.dkpi--select .dka__panels { grid-column: 1; grid-row: 1; }
+.dkpi--select .dka__intro { grid-column: 2; grid-row: 1; }
+.dkpi--select .dka__head { margin-bottom: clamp(18px, 3vh, 30px); }
+.dkpi--select .dka__head h2 { font-size: clamp(2rem, 3.5vw, 3.05rem); }
+.dkpi--select .dka__head p { font-size: var(--fs-body); margin-bottom: 0; }
+.dkpi--select .dka__tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.dkpi--select .dka__tabs[hidden] { display: none; }
+.js .dkpi--select .dka__tabs[hidden] { display: grid; visibility: hidden; }
+.dkpi--select .dka__tab { display: flex; align-items: center; gap: 10px; min-height: 48px; padding: 7px 12px 7px 8px; margin: 0;
+  border-radius: var(--r-control); border: 1px solid var(--line-2); background: color-mix(in srgb, var(--bg-3) 45%, transparent);
+  color: var(--ink-2); font: 600 .86rem/1.2 var(--font); text-align: left; cursor: pointer;
+  transition: color var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), box-shadow var(--t-base) var(--ease); }
+.dkpi--select .dka__tab:hover { color: var(--ink); border-color: var(--line); }
+.dkpi--select .dka__tab[aria-selected="true"] { color: var(--ink); border-color: color-mix(in srgb, var(--glow) 55%, transparent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--glow) 22%, transparent), 0 10px 26px -14px var(--glow); }
+.dkpi--select .dka__ico { width: 32px; height: 32px; border-radius: 8px; }
+.dkpi--select .dka__panels { position: relative; }
+
+/* The panel is a photo card: the search bar at the top, the photo showing through in the middle, and
+   the name, line and link at the bottom. */
+.dkpi--select .dka__panel { --pad: clamp(28px, 3.4vw, 48px);
+  display: flex; flex-direction: column; justify-content: flex-start; overflow: hidden; isolation: isolate;
+  min-height: clamp(380px, 66vh, 600px); padding: var(--pad);
+  background: var(--bg-3); -webkit-backdrop-filter: none; backdrop-filter: none; }
+.dkpi--select .dka__panel[hidden] { display: none; }
+.js .dkpi--select:not(.is-ready) .dka__panel:not(:first-child) { display: none; }
+
+/* The photo, treated like the Home hero's: dimmed and slightly flattened, then a colour layer of
+   --accent at the hero's strength keeps its light and shade and gives it the brand teal. */
+.dkpi--select .dka__media { position: absolute; inset: 0; z-index: 0; overflow: hidden; isolation: isolate;
+  border-radius: inherit; pointer-events: none; background: var(--bg-3); }
+.dkpi--select .dka__media img { position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; object-position: var(--pos, 50% 50%); transform-origin: var(--pos, 50% 50%);
+  filter: saturate(.8) brightness(.72) contrast(1.08); }
+.dkpi--select .dka__media::before { content: ""; position: absolute; inset: 0; z-index: 1;
+  background: var(--accent); mix-blend-mode: color; opacity: .85; }
+/* Soft edges like the hero's and a light shade under the search bar. */
+.dkpi--select .dka__media::after { content: ""; position: absolute; inset: 0; z-index: 2;
+  background:
+    linear-gradient(180deg, color-mix(in srgb, var(--bg-3) 50%, transparent) 0, transparent 30%),
+    radial-gradient(130% 100% at 50% 30%, transparent 55%, color-mix(in srgb, var(--bg-3) 60%, transparent) 100%); }
+/* Chiropractic: the adjustment sits low in its photo, so the photo is drawn smaller and higher to bring
+   it above the name; its foot fades out under the scrim. */
+.dkpi--select .dka__media--raise img { top: -14%; height: 84%;
+  -webkit-mask-image: linear-gradient(180deg, var(--bg) 78%, transparent); mask-image: linear-gradient(180deg, var(--bg) 78%, transparent); }
+/* The scrim behind the text hangs from the name, so it always starts just above the bottom block
+   however the name and the line wrap, and runs past the panel's foot (the panel clips it): clear
+   above, half dark at the name's top, near solid behind the line and the link. */
+.dkpi--select .dka__name::before { content: ""; position: absolute; z-index: -1; pointer-events: none;
+  left: calc(-1 * var(--pad)); right: calc(-1 * var(--pad)); top: -100px; height: 720px;
+  background: linear-gradient(180deg, transparent 0,
+    color-mix(in srgb, var(--bg-3) 30%, transparent) 50px,
+    color-mix(in srgb, var(--bg-3) 62%, transparent) 100px,
+    color-mix(in srgb, var(--bg-3) 84%, transparent) 150px,
+    color-mix(in srgb, var(--bg-3) 92%, transparent) 210px); }
+
+.dkpi--select .dka__search { z-index: 2; display: flex; align-items: center; gap: 12px; align-self: stretch; margin-bottom: auto;
+  padding: 14px 20px; border-radius: var(--r-pill); border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--bg-3) 80%, transparent);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  box-shadow: inset 0 2px 10px -4px var(--bg-3), 0 10px 30px -14px var(--bg-3);
+  font: 500 1.05rem/1.2 var(--body); color: var(--ink); }
+.dkpi--select .dka__search .ico-search { font-size: 1.15rem; }
+.dkpi--select .dka__q::after { content: ""; display: inline-block; width: 2px; height: 1.1em; margin-left: 3px; vertical-align: -.18em; background: var(--glow); }
+.dkpi--select .dka__name { display: flex; align-items: center; gap: 16px; margin: clamp(20px, 3.4vh, 32px) 0 10px;
+  font: 900 clamp(2rem, 3.3vw, 2.8rem)/1.05 var(--font); letter-spacing: -.02em; color: var(--ink); }
+.dkpi--select .dka__big { width: 52px; height: 52px; border-radius: 14px; }
+.dkpi--select .dka__panel > p { font: 400 var(--fs-lead)/1.5 var(--body); color: var(--ink-2); margin: 0 0 clamp(18px, 3vh, 28px); }
+.dkpi--select .dka__go { align-self: flex-start; display: inline-flex; align-items: center; gap: .35em; padding: 12px 18px; border-radius: var(--r-pill);
+  border: 1px solid var(--line); background: color-mix(in srgb, var(--bg-3) 55%, transparent); color: var(--ink); font: 600 .95rem/1 var(--body);
+  transition: border-color var(--t-fast) var(--ease), background var(--t-fast) var(--ease); }
+.dkpi--select .dka__go b { color: var(--accent); transition: transform var(--t-fast) var(--ease); }
+.dkpi--select .dka__go:hover { text-decoration: none; border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.dkpi--select .dka__go:hover b { transform: translateX(3px); }
+@media (prefers-reduced-motion: no-preference) {
+  .dkpi--select .dka__q::after { animation: dka-caret 1.1s steps(1) infinite; }
+  .dkpi--select.is-ready .dka__panel:not([hidden]) { animation: dka-in .4s var(--ease-out); }
+  /* the photo settles in as its panel opens */
+  .dkpi--select.is-ready .dka__panel:not([hidden]) .dka__media img { animation: dka-settle 1.4s var(--ease-out); }
+  @keyframes dka-caret { 50% { opacity: 0; } }
+  @keyframes dka-in { from { opacity: 0; transform: translateY(8px); } }
+  @keyframes dka-settle { from { transform: scale(1.06); } }
+}
+html:not(.js) .dkpi--select .dka { grid-template-columns: minmax(0, 1fr); }
+html:not(.js) .dkpi--select .dka__panels, html:not(.js) .dkpi--select .dka__intro { grid-column: auto; grid-row: auto; }
+html:not(.js) .dkpi--select .dka__panels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+/* without JS the nine panels share the row, so the name and the padding come down to fit a third of it */
+html:not(.js) .dkpi--select .dka__panel { --pad: clamp(22px, 2.2vw, 32px); min-height: 420px; }
+html:not(.js) .dkpi--select .dka__name { font-size: clamp(1.6rem, 2.1vw, 1.9rem); gap: 12px; }
+html:not(.js) .dkpi--select .dka__big { width: 44px; height: 44px; }
+@media (max-width: 980px) {
+  .dkpi--select .dka { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+  .dkpi--select .dka__panels, .dkpi--select .dka__intro { grid-column: auto; grid-row: auto; }
+  .dkpi--select .dka__panel { min-height: clamp(400px, 54vw, 480px); }
+  html:not(.js) .dkpi--select .dka__panels { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 600px) {
+  .dkpi--select .dka__tabs { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scroll-padding-inline: var(--s-4); gap: 8px; padding: 2px var(--s-4) 8px; margin-inline: calc(-1 * var(--s-4)); scrollbar-width: none; }
+  .js .dkpi--select .dka__tabs[hidden] { display: flex; }
+  .dkpi--select .dka__tabs::-webkit-scrollbar { display: none; }
+  .dkpi--select .dka__tab { flex: none; scroll-snap-align: start; }
+  .dkpi--select .dka__panel { min-height: clamp(440px, 122vw, 520px); }
+  /* a phone shows about half the photo's width; --pos-s, where a panel sets one, aims it */
+  .dkpi--select .dka__media img { object-position: var(--pos-s, var(--pos, 50% 50%)); transform-origin: var(--pos-s, var(--pos, 50% 50%)); }
+  .dkpi--select .dka__media--raise img { top: -6%; height: 62%; }
+  .dkpi--select .dka__search { font-size: .95rem; padding: 12px 16px; }
+  .dkpi--select .dka__big { width: clamp(32px, 11.45vw + 1.4px, 46px); height: clamp(32px, 11.45vw + 1.4px, 46px); }
+  /* Below 390px the card's padding, the name's icon, its gap and the name itself shrink with the screen
+     (at 390px and up they are the values above), so the longest word, "Management", stays inside the
+     card at 320px and narrower instead of being cut off by the card's edge. */
+  .dkpi--select .dka__panel { --pad: clamp(16px, 8.6vw - 5.5px, 28px); }
+  .dkpi--select .dka__name { gap: clamp(8px, 5.72vw - 6.3px, 16px); font-size: clamp(1.25rem, 9.2vw - 3.85px, 2rem); }
+  html:not(.js) .dkpi--select .dka__panels { grid-template-columns: minmax(0, 1fr); }
+}
+
 .dfcp { padding-block: var(--pad); }
 .dfcp .dio__darkbed { --dark-bloom: 86% 8%; }
 .dfcp .container { position: relative; z-index: 1; }
@@ -305,7 +573,9 @@ body { background: var(--bg-3); }
 .dfcp__who { font: 700 1rem/1.2 var(--font); color: var(--ink); }
 .dfcp__flag { font: 700 .62rem/1 var(--body); letter-spacing: .12em; text-transform: uppercase;
   padding: 5px 10px; border-radius: var(--r-pill); }
-.dfcp__flag.bad  { color: var(--sig-danger-2); background: var(--sig-danger-soft); border: 1px solid var(--sig-danger-line); }
+/* The red flag's tint is mixed into the section colour (not see-through), so its contrast does not depend on
+   whatever shows through the card behind it (the background pattern, a glow). */
+.dfcp__flag.bad  { color: var(--sig-danger-2); background: color-mix(in srgb, var(--sig-danger) 14%, var(--bg-2)); border: 1px solid var(--sig-danger-line); }
 .dfcp__flag.good { color: var(--sig-good); background: var(--sig-good-soft); border: 1px solid color-mix(in srgb, var(--glow) 46%, transparent); }
 .dfcp__cap { font: 400 .84rem/1.4 var(--body); color: var(--ink-2); margin: 0 0 18px; }
 
@@ -387,7 +657,7 @@ body { background: var(--bg-3); }
   display: grid; place-items: center; border-radius: 50% 50% 50% 0; rotate: -45deg;
   font: 800 .68rem/1 var(--font); box-shadow: 0 5px 12px -5px rgba(0,0,0,.7); }
 .dsolv__pin span { rotate: 45deg; }
-.dsolv__pin.bad  { background: var(--sig-danger); color: var(--ink); }
+.dsolv__pin.bad  { background: color-mix(in srgb, var(--sig-danger) 72%, var(--bg-3)); color: var(--ink); }
 .dsolv__pin.mid  { background: var(--sig-warn); color: var(--on-accent); }
 .dsolv__pin.good { background: var(--sig-good); color: var(--on-accent); box-shadow: 0 0 13px -2px color-mix(in srgb, var(--glow) 80%, transparent); }
 .dsolv__scan-foot { margin-top: 14px; display: flex; align-items: baseline; justify-content: space-between; gap: 10px; }
@@ -475,7 +745,7 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 .dimp__sale { margin: 0; width: 100%; padding: clamp(10px,1.1vw,14px); }
 .dimp__sale img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; object-position: center;
   border-radius: var(--r-control); display: block; border: 1px solid var(--line-2); }
-.dimp__caption { margin-top: clamp(18px,2.2vw,26px); text-align: center; font: 400 .8rem/1.4 var(--body); color: var(--ink-3); }
+.dimp__caption { margin-top: clamp(18px,2.2vw,26px); text-align: center; font: 400 .8rem/1.4 var(--body); color: color-mix(in srgb, var(--ink-2) 60%, var(--ink-3)); }
 
 .dshow { padding-block: var(--pad); }
 .dshow .container { position: relative; z-index: 1; }
@@ -528,9 +798,9 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
   color: var(--cta-ink); background: var(--grad-accent); }
 
 .bw__hero { display: grid; grid-template-columns: 1.1fr .9fr; gap: 14px; align-items: center; margin-bottom: clamp(14px,1.8vw,20px); }
-.bw__hero .eye { font: 700 .56rem/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; display: block; }
+.bw__hero .eye { font: 700 .56rem/1 var(--body); letter-spacing: .14em; text-transform: uppercase; color: color-mix(in srgb, var(--accent) 70%, var(--ink)); margin-bottom: 8px; display: block; }
 .bw__hero h4 { font: 800 clamp(1rem,1.6vw,1.35rem)/1.08 var(--font); letter-spacing: -.01em; color: var(--ink); margin: 0 0 8px; }
-.bw__hero p { font: 400 .68rem/1.4 var(--body); color: var(--ink-2); margin: 0 0 12px; }
+.bw__hero p { font: 400 .68rem/1.4 var(--body); color: color-mix(in srgb, var(--ink-2) 70%, var(--ink)); margin: 0 0 12px; }
 .bw__hero .cta { display: inline-flex; align-items: center; gap: .4em; font: 700 .64rem/1 var(--body);
   padding: 8px 13px; border-radius: var(--r-pill); color: var(--cta-ink); background: var(--grad-accent); }
 .bw__hero .cta svg { width: 11px; height: 11px; }
@@ -566,7 +836,7 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
   padding: 9px; border-radius: var(--r-pill); color: var(--cta-ink); background: var(--grad-accent); margin-top: 4px; }
 
 .dshow__support { margin-top: clamp(26px,3.4vw,42px); }
-.dshow__support-lbl { display: block; text-align: center; font: 600 .8rem/1.4 var(--body); color: var(--ink-2); margin-bottom: 20px; }
+.dshow__support-lbl { display: block; text-align: center; font: 600 .8rem/1.4 var(--body); color: color-mix(in srgb, var(--ink-2) 60%, var(--ink)); margin-bottom: 20px; }
 .dshow__support-lbl b { color: var(--ink); }
 .dshow__support-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px,2vw,24px); align-items: stretch; }
 
@@ -607,7 +877,7 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 .dshow__frame--clinic .bw__hero .cta { background: var(--fr-accent); color: var(--fr-on); }
 .dshow__frame--dental .bw__hero .eye,
 .dshow__frame--medspa .bw__hero .eye,
-.dshow__frame--clinic .bw__hero .eye { color: var(--fr-accent); }
+.dshow__frame--clinic .bw__hero .eye { color: color-mix(in srgb, var(--fr-accent) 65%, var(--ink)); }
 .dshow__frame--dental .bw__art,
 .dshow__frame--medspa .bw__art,
 .dshow__frame--clinic .bw__art { background:
@@ -748,6 +1018,33 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 .dpf { padding-block: var(--pad); }
 .dpf .dio__darkbed { --dark-bloom: 50% 4%; }
 .dpf .container { position: relative; z-index: 1; }
+/* Clean edges (owner, 9 October 2026: "awkward crop ... clean and seamless even when scrolling").
+   Top: the glow box starts --glow-top (8%) above the section and the section clips it, which cut the glow off
+   in a straight line along the top edge. A mask fades the glow to nothing exactly at the section's top edge
+   (--glow-top over the glow's 70% height, from the top of the glow box) and back to full by its centre.
+   Bottom: this section is see-through (dio--blend) over the fixed page background, so the line where the
+   solid section after it begins changed with the scroll position. That section now starts see-through and
+   fades into its own background over --join, so both sides of the line show the same page background. */
+/* No clip on this section: the cards' drop shadows run past its bottom edge (the compact layout below leaves
+   little room under them), and a clip cut them off in a line. Unclipped, the shadow tails continue into the
+   next section's see-through top and fade there; the glow is masked to nothing above this section's top. */
+.dio.dpf { overflow: visible; }
+.dpf .dio__glow {
+  -webkit-mask-image: linear-gradient(180deg, transparent calc(var(--glow-top, -8%) * -100 / 70), var(--bg) 34%);
+          mask-image: linear-gradient(180deg, transparent calc(var(--glow-top, -8%) * -100 / 70), var(--bg) 34%);
+}
+.dpf + .dio { --join: clamp(110px, 12vw, 180px); --join-bg: var(--bg-3); background: linear-gradient(180deg, transparent, var(--join-bg) var(--join)); }
+.dpf + .dio.dio--dark { --join-bg: var(--bg); }
+.dpf + .dio > :is(.dio__bed, .dio__grade, .dio__seam, .dio__darkbed) {
+  -webkit-mask-image: linear-gradient(180deg, transparent, var(--bg) var(--join));
+          mask-image: linear-gradient(180deg, transparent, var(--bg) var(--join));
+}
+/* that section's glow box also starts --glow-top above it, so its fade starts at the section's edge, not the box's */
+.dpf + .dio > .dio__glow {
+  --glow-edge: calc(var(--glow-top, -8%) * -100 / 70);
+  -webkit-mask-image: linear-gradient(180deg, transparent var(--glow-edge), var(--bg) calc(var(--glow-edge) + var(--join)));
+          mask-image: linear-gradient(180deg, transparent var(--glow-edge), var(--bg) calc(var(--glow-edge) + var(--join)));
+}
 .dpf__head { text-align: center; max-width: 680px; margin: 0 auto clamp(34px, 4.6vw, 52px); }
 .dpf__head .eyebrow { justify-content: center; margin-bottom: 16px; }
 .dpf__head h2 { font: 800 var(--fs-h2)/1.05 var(--font); letter-spacing: -.02em; color: var(--ink); margin: 0 0 14px; }
@@ -768,8 +1065,8 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 .dpf__amt .from { font: 600 .72rem/1 var(--body); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-2); }
 .dpf__amt .price { display: flex; align-items: baseline; gap: .14em; font: 900 2.7rem/1 var(--font); letter-spacing: -.02em; color: var(--ink); }
 .dpf__amt .price small { font: 500 1rem/1 var(--body); color: var(--ink-2); }
-.dpf__per { font: 400 .82rem/1.3 var(--body); color: var(--ink-3); margin: 0 0 16px; }
-.dpf__blurb { font: 400 .92rem/1.5 var(--body); color: var(--ink-2); margin: 0 0 20px; padding-bottom: 20px; border-bottom: 1px solid var(--divider); min-height: 4.4em; }
+.dpf__per { font: 400 .82rem/1.3 var(--body); color: color-mix(in srgb, var(--ink-2) 60%, var(--ink-3)); margin: 0 0 16px; }
+.dpf__blurb { font: 400 .92rem/1.5 var(--body); color: var(--ink-2); margin: 0 0 20px; padding-bottom: 20px; border-bottom: 1px solid var(--divider); }
 .dpf__feats { list-style: none; margin: 0 0 26px; padding: 0; display: grid; gap: 13px; }
 .dpf__feats li { display: grid; grid-template-columns: 22px 1fr; gap: 12px; align-items: start;
   font: 400 .9rem/1.45 var(--body); color: var(--ink-2); }
@@ -778,6 +1075,57 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 .dpf__foot { display: flex; justify-content: center; flex-wrap: wrap; gap: 10px 26px; margin-top: clamp(24px, 3vw, 36px); }
 .dpf__foot span { display: inline-flex; align-items: center; gap: .5em; font: 500 .82rem/1.2 var(--body); color: var(--ink-2); }
 .dpf__foot span::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+/* Compact pricing (owner, 9 October 2026: "fit in a single viewport ... look sleeker"). From 1024px wide:
+   the heading splits (eyebrow and title left, intro right, bottom-aligned, as in the FCP section); the cards
+   take the full container width and share their rows (subgrid), so name, price, blurb, list and button line
+   up across both plans; the ribbon sits on the name's row (no spacer on Plus) and "+ per location" beside the
+   price; vertical sizes follow the screen height. Tablets in portrait and phones keep the stacked cards. */
+.dpf .dio__glow {
+  /* the glow's centre sits mid-box (at the same place on the page as before: --glow-right moves the box), so
+     the gradient fades out inside the box instead of being cut by the box's right edge */
+  --glow-right: 18%;
+  background: radial-gradient(50% 50% at 50% 30%,
+              color-mix(in srgb, var(--glow) 20%, transparent),
+              color-mix(in srgb, var(--accent) 7%, transparent) 46%, transparent 72%);
+}
+/* the spacer only lined Plus up with Pro's ribbon; the cards now share rows (wide) or stack (narrow), so it goes */
+.dpf__ribbon-spacer { display: none; }
+@media (min-width: 1024px) {
+  .dio.dpf { padding-block: clamp(18px, 3.4vh, 72px); }
+  .dpf__head {
+    /* the title column is the wider one: the industry pages' "Transparent pricing." needs it on one line in every engine */
+    display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); column-gap: clamp(32px, 5vw, 80px);
+    align-items: end; max-width: none; margin: 0 0 clamp(14px, 2.8vh, 40px); text-align: left;
+  }
+  .dpf__head .eyebrow { grid-column: 1; grid-row: 1; justify-content: flex-start; justify-self: start; margin-bottom: clamp(8px, 1.4vh, 16px); }
+  .dpf__head h2 { grid-column: 1; grid-row: 2; margin: 0; font-size: clamp(2.1rem, min(4.2vw, 6vh), 3.4rem); }
+  .dpf__head p { grid-column: 2; grid-row: 1 / span 2; margin: 0; padding-bottom: .3em; max-width: 52ch;
+    font-size: min(var(--fs-lead), max(1.125rem, 2.4vh)); }
+
+  .dpf__grid { max-width: none; grid-template-rows: repeat(5, auto); column-gap: clamp(16px, 2vw, 26px); row-gap: 0; }
+  .dpf__card {
+    display: grid; grid-row: span 5; grid-template-rows: subgrid; grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 14px; align-items: start;
+    padding: clamp(16px, 2.6vh, 34px) clamp(22px, 2.4vw, 36px) clamp(16px, 2.6vh, 32px);
+  }
+  .dpf__tier { grid-row: 1; grid-column: 1; align-self: center; margin: 0 0 clamp(8px, 1.5vh, 16px); }
+  .dpf__ribbon { grid-row: 1; grid-column: 2; justify-self: end; align-self: center; margin: 0 0 clamp(8px, 1.5vh, 16px); }
+  .dpf__amt { grid-row: 2; grid-column: 1; gap: 5px; margin: 0; }
+  .dpf__amt .price { font-size: clamp(2.2rem, min(3.4vw, 5.4vh), 2.7rem); }
+  .dpf__per { grid-row: 2; grid-column: 2; align-self: end; margin: 0 0 .3em; }
+  .dpf__blurb { grid-row: 3; grid-column: 1 / -1; min-height: 0;
+    margin: clamp(8px, 1.5vh, 16px) 0 clamp(10px, 1.6vh, 18px); padding-bottom: clamp(10px, 1.6vh, 18px); }
+  .dpf__feats { grid-row: 4; grid-column: 1 / -1; align-content: start; gap: clamp(5px, 1vh, 11px); margin: 0 0 clamp(14px, 2.4vh, 26px); }
+  .dpf__feats li { line-height: 1.4; }
+  /* no one-word last lines in the blurbs and list items */
+  .dpf__blurb, .dpf__feats li { text-wrap: pretty; }
+  .dpf__card .btn { grid-row: 5; grid-column: 1 / -1; margin-top: 0; padding-block: clamp(.66em, 1.5vh, .92em); }
+  .dpf__foot { margin-top: clamp(10px, 1.8vh, 28px); }
+}
+/* the footer line sits in the bottom 8% of a short screen when the section fits it exactly, where the reveal
+   observer never fires: it fades in with the cards instead */
+.js .dpf__grid:has(> .reveal.in) + .dpf__foot.reveal { opacity: 1; transform: none; transition-delay: .3s; }
 
 .dx { min-height: 70vh; display: flex; align-items: center; padding-block: var(--pad-lg); text-align: center; }
 .dx .dio__darkbed {
@@ -931,14 +1279,28 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
     linear-gradient(168deg, var(--bg-2) 0%, var(--bg) 46%, var(--bg-3) 100%);
 }
 
+/* Clear of the transparent header's nav links at the top, like .dbf .dio__darkbed::after. */
 .hv2-typographic .hv2-ground::after {
-  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .42;
-  background:
-    linear-gradient(to right, color-mix(in srgb, var(--line-2) 60%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in srgb, var(--line-2) 60%, transparent) 1px, transparent 1px);
-  background-size: 68px 68px, 68px 68px;
-  -webkit-mask-image: radial-gradient(120% 110% at 50% 6%, rgba(0,0,0,1) 0%, transparent 70%);
-          mask-image: radial-gradient(120% 110% at 50% 6%, rgba(0,0,0,1) 0%, transparent 70%);
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: var(--hex-a);
+  background: url(../img/hex-connections.webp) var(--hex-pos) / var(--hex-size) auto repeat-y;
+  -webkit-mask-image: linear-gradient(180deg, transparent var(--hex-clear), var(--bg) calc(var(--hex-clear) + 80px)),
+                      radial-gradient(120% 110% at 50% 6%, var(--bg) 0%, transparent 70%);
+  -webkit-mask-composite: source-in;
+          mask-image: linear-gradient(180deg, transparent var(--hex-clear), var(--bg) calc(var(--hex-clear) + 80px)),
+                      radial-gradient(120% 110% at 50% 6%, var(--bg) 0%, transparent 70%);
+          mask-composite: intersect;
+}
+/* On a phone the copy fills the hero's width, so the pattern keeps to the space between the header and
+   the headline, as it keeps beside the copy on wider screens: a short fade of fixed height (gone about
+   290px down), so a taller hero does not stretch it over its copy. The Home hero sets its own fade
+   below (.hv2--photo .hv2-ground::after). */
+@media (max-width: 767px) {
+  .hv2-typographic .hv2-ground::after {
+    -webkit-mask-image: linear-gradient(180deg, transparent var(--hex-clear), var(--bg) calc(var(--hex-clear) + 80px)),
+                        radial-gradient(120% 320px at 50% 6%, var(--bg) 0%, transparent 70%);
+            mask-image: linear-gradient(180deg, transparent var(--hex-clear), var(--bg) calc(var(--hex-clear) + 80px)),
+                        radial-gradient(120% 320px at 50% 6%, var(--bg) 0%, transparent 70%);
+  }
 }
 
 .hv2-typographic .hv2-bloom {
@@ -1000,6 +1362,12 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
   color: var(--ink-2);
   max-width: 44ch;
 }
+/* Readability (9 October 2026). The centred heroes' bloom sits behind the copy: their gradient line gets brighter
+   ends, their breadcrumb links are lifted, and on phones (where the bloom is behind the subtitle) the subtitle
+   takes --ink. Home's photo hero keeps its own colours. */
+.hv2-typographic:not(.hv2--photo) h1 .grad { background-image: linear-gradient(100deg, var(--glow) 0%, var(--accent-2) 60%, var(--glow) 100%); }
+.hv2-typographic .dio-crumb a, .hv2-typographic .dio-crumb .sep { color: color-mix(in srgb, var(--ink-2) 50%, var(--ink)); }
+@media (max-width: 767px) { .hv2-typographic:not(.hv2--photo) .hv2-sub { color: var(--ink); } }
 
 .hv2-typographic .hv2-actions {
   display: flex; flex-wrap: wrap; gap: 16px;
@@ -1048,6 +1416,7 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
   --hp-gap: clamp(32px, 3vw, 56px);
   --hp-fade: clamp(120px, 12vw, 240px);
   --hp-left: calc(max(0px, (100% - var(--hp-maxw)) / 2) + var(--hp-pad));
+  --hp-tint: .85;
 }
 .hv2-typographic.hv2--photo.dh { justify-content: flex-start; text-align: left; background: transparent; }
 .hv2--photo .hv2-ground,
@@ -1125,15 +1494,141 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 .hv2--photo .hv2-photo img {
   position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: cover; object-position: 46% 56%;
-  filter: saturate(.8) brightness(.84) contrast(1.06);
+  filter: saturate(.8) brightness(.72) contrast(1.08);
+}
+/* The photo takes the brand teal: a colour layer over it keeps the photo's light and shade and
+   swaps its colours for --accent. The tint in the desktop shade's image file uses the same
+   strength (--hp-tint) and colour, baked in. */
+.hv2--photo .hv2-photo__media::before {
+  content: ""; position: absolute; inset: 0; z-index: 1;
+  background: var(--accent); mix-blend-mode: color; opacity: var(--hp-tint);
 }
 .hv2--photo .hv2-photo__media::after {
-  content: ""; position: absolute; inset: 0;
+  content: ""; position: absolute; inset: 0; z-index: 2;
   mix-blend-mode: multiply;
   background: linear-gradient(90deg,
     color-mix(in srgb, var(--bg-3) 70%, transparent) 0%,
     color-mix(in srgb, var(--bg) 40%, transparent) 45%,
     color-mix(in srgb, var(--bg) 26%, transparent) 100%);
+}
+
+/* A beam of light rises from the tablet's screen. The photo box is a size container, so the beam
+   is placed on the photo itself: the image's drawn size (object-fit: cover of 2000x1055) and its
+   offset (object-position 46% and --ray-oy) come from cqw/cqh. The beam's base lies along the
+   tablet's lit top edge, measured on the photo (2688x1520) from (33.97%, 36.46%) to (58%, 60.46%):
+   27.6% of the image wide, centred at 45.985% / 48.46%, sloping 29.45deg. It rises at right angles
+   to the edge, towards the doctor. Re-measure these if the photo changes. */
+.hv2--photo .hv2-photo__media { container-type: size; }
+.hv2--photo .hv2-photo__ray {
+  --ray-oy: .56;
+  --iw: max(100cqw, 176.84cqh); --ih: max(100cqh, 56.55cqw);
+  --ax: calc(.46 * (100cqw - var(--iw)) + .45985 * var(--iw));
+  --ay: calc(var(--ray-oy) * (100cqh - var(--ih)) + .48460 * var(--ih));
+  position: absolute; z-index: 3; pointer-events: none;
+  width: calc(.2760 * var(--iw)); height: calc(.8 * var(--ih));
+  left: calc(var(--ax) - .1380 * var(--iw)); top: calc(var(--ay) - .8 * var(--ih));
+  transform-origin: 50% 100%; transform: rotate(29.45deg) perspective(600px) rotateX(-38deg);
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(50% 9% at 50% 100%, color-mix(in srgb, var(--cta-bg) 85%, transparent), transparent 100%),
+    linear-gradient(0deg, color-mix(in srgb, var(--cta-bg) 70%, transparent) 0%,
+      color-mix(in srgb, var(--cta-bg) 40%, transparent) 26%,
+      color-mix(in srgb, var(--cta-bg) 16%, transparent) 58%, transparent 100%);
+  -webkit-mask-image: linear-gradient(0deg, var(--bg) 0%, var(--bg) 35%, transparent 100%),
+                      linear-gradient(90deg, transparent 0%, var(--bg) 10%, var(--bg) 90%, transparent 100%);
+  -webkit-mask-composite: source-in;
+          mask-image: linear-gradient(0deg, var(--bg) 0%, var(--bg) 35%, transparent 100%),
+                      linear-gradient(90deg, transparent 0%, var(--bg) 10%, var(--bg) 90%, transparent 100%);
+          mask-composite: intersect;
+  filter: blur(5px);
+}
+/* Two layers of light shafts run along the beam, in the primary button's colour (--cta-bg). When
+   motion is allowed they drift across it in opposite directions at different speeds, so the light
+   ripples like a wave; the beam itself stays still, so its base never leaves the tablet's edge.
+   Each layer is twice the beam's width and moves exactly one tile per loop. */
+.hv2--photo .hv2-photo__ray::before,
+.hv2--photo .hv2-photo__ray::after {
+  content: ""; position: absolute; top: 0; bottom: 0; left: -50%; width: 200%;
+  background-repeat: repeat-x;
+}
+.hv2--photo .hv2-photo__ray::before {
+  background-image: linear-gradient(90deg, transparent 0 34%,
+    color-mix(in srgb, var(--cta-bg) 30%, transparent) 46% 54%, transparent 66% 100%);
+  background-size: 12.5% 100%;
+}
+.hv2--photo .hv2-photo__ray::after {
+  background-image: linear-gradient(90deg, transparent 0 40%,
+    color-mix(in srgb, var(--cta-bg) 22%, transparent) 50%, transparent 60% 100%);
+  background-size: calc(100% / 7) 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hv2--photo .hv2-photo__ray::before { animation: hv2-ray-drift-a 7s linear infinite; }
+  .hv2--photo .hv2-photo__ray::after { animation: hv2-ray-drift-b 11s linear infinite; }
+  @keyframes hv2-ray-drift-a { from { transform: translateX(0); } to { transform: translateX(-12.5%); } }
+  @keyframes hv2-ray-drift-b { from { transform: translateX(calc(-100% / 7)); } to { transform: translateX(0); } }
+}
+
+/* On a desktop the whole photo shows under the copy as a soft, blurred shade: a pre-blurred copy
+   of it (img/hero-clinician-tablet-shade.webp, made with the photo's filter and its teal tint,
+   and a soft left edge) sits behind the sharp one, lined up with it (same height, and the 46%
+   position moved by .54 of the extra width). The shade starts at the copy's left edge, comes in
+   across the copy, and hands over to the sharp photo. It multiplies, so it only ever darkens
+   the ground in the ground's own colour (the photo's dark shapes show; its bright window adds no
+   grey haze, and the copy's contrast can only rise); --hp-shade-b and --hp-shade-o set how light
+   and how strong it is. */
+.hv2--photo .hv2-shade { display: none; }
+@media (min-width: 981px) {
+  .hv2--photo { --hp-shade: calc(var(--hp-col) + var(--hp-gap)); --hp-shade-b: 1.1; --hp-shade-o: .85; }
+  .hv2--photo .hv2-shade {
+    display: block; position: absolute; z-index: -2; pointer-events: none;
+    mix-blend-mode: multiply;
+    top: 0; right: 0; bottom: 0;
+    left: calc(var(--hp-left) + var(--hp-col) + var(--hp-gap) - var(--hp-shade));
+    -webkit-mask-image: linear-gradient(90deg, transparent 0,
+      color-mix(in srgb, var(--bg) 18%, transparent) calc(var(--hp-shade) * .15),
+      color-mix(in srgb, var(--bg) 45%, transparent) calc(var(--hp-shade) * .35),
+      color-mix(in srgb, var(--bg) 70%, transparent) calc(var(--hp-shade) * .6),
+      color-mix(in srgb, var(--bg) 88%, transparent) calc(var(--hp-shade) * .85),
+      color-mix(in srgb, var(--bg) 95%, transparent) var(--hp-shade),
+      var(--bg) calc(var(--hp-shade) + var(--hp-fade) * .4),
+      color-mix(in srgb, var(--bg) 70%, transparent) calc(var(--hp-shade) + var(--hp-fade)),
+      transparent calc(var(--hp-shade) + var(--hp-fade) * 1.6));
+            mask-image: linear-gradient(90deg, transparent 0,
+      color-mix(in srgb, var(--bg) 18%, transparent) calc(var(--hp-shade) * .15),
+      color-mix(in srgb, var(--bg) 45%, transparent) calc(var(--hp-shade) * .35),
+      color-mix(in srgb, var(--bg) 70%, transparent) calc(var(--hp-shade) * .6),
+      color-mix(in srgb, var(--bg) 88%, transparent) calc(var(--hp-shade) * .85),
+      color-mix(in srgb, var(--bg) 95%, transparent) var(--hp-shade),
+      var(--bg) calc(var(--hp-shade) + var(--hp-fade) * .4),
+      color-mix(in srgb, var(--bg) 70%, transparent) calc(var(--hp-shade) + var(--hp-fade)),
+      transparent calc(var(--hp-shade) + var(--hp-fade) * 1.6));
+  }
+  .hv2--photo .hv2-shade::before {
+    content: ""; position: absolute; inset: 0;
+    background: url(../img/hero-clinician-tablet-shade.webp) calc(46% + var(--hp-shade) * .54) 0 / auto 100% no-repeat;
+    filter: brightness(var(--hp-shade-b)); opacity: var(--hp-shade-o);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0,
+      color-mix(in srgb, var(--bg) 20%, transparent) max(8%, 72px),
+      color-mix(in srgb, var(--bg) 62%, transparent) max(16%, 140px),
+      var(--bg) max(26%, 220px), var(--bg) 62%,
+      color-mix(in srgb, var(--bg) 52%, transparent) 76%,
+      color-mix(in srgb, var(--bg) 14%, transparent) 88%, transparent 95%);
+            mask-image: linear-gradient(180deg, transparent 0,
+      color-mix(in srgb, var(--bg) 20%, transparent) max(8%, 72px),
+      color-mix(in srgb, var(--bg) 62%, transparent) max(16%, 140px),
+      var(--bg) max(26%, 220px), var(--bg) 62%,
+      color-mix(in srgb, var(--bg) 52%, transparent) 76%,
+      color-mix(in srgb, var(--bg) 14%, transparent) 88%, transparent 95%);
+  }
+  /* The background hex pattern sits above the photo layers on the left, faint, and fades out before
+     the sharp photo; it replaces the ground's own pattern here. */
+  .hv2--photo .hv2-ground::after { display: none; }
+  .hv2--photo .hv2-vignette::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: var(--hex-a-hero, .08);
+    background: url(../img/hex-connections.webp) var(--hex-pos) / var(--hex-size) auto repeat-y;
+    -webkit-mask-image: radial-gradient(50% 78% at 18% 46%, var(--bg) 0%, var(--bg) 35%, transparent 80%);
+            mask-image: radial-gradient(50% 78% at 18% 46%, var(--bg) 0%, var(--bg) 35%, transparent 80%);
+  }
 }
 
 /* On a short screen the copy reaches the bottom of the hero, where the decorative
@@ -1150,6 +1645,13 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
   .hv2--photo { --hp-col: min(calc(var(--hp-fs) * 15.5), 100vw - 420px); }
   .hv2--photo .hv2-sub { max-width: min(44ch, 100%); }
   /* The gap is at its minimum here; the trust line steps out of the primary button's glow. */
+  .hv2--photo .hv2-trust { margin-top: 10px; }
+}
+
+/* Up to 700px tall the gap above the trust line is still near its 14px minimum, and on a wide
+   window the line sits in the primary button's glow (under 4.5:1 from 501 to 620px tall); it
+   steps out of the glow the same way. */
+@media (min-width: 981px) and (max-height: 700px) {
   .hv2--photo .hv2-trust { margin-top: 10px; }
 }
 
@@ -1186,6 +1688,7 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
       color-mix(in srgb, var(--bg) 14%, transparent) 87%, transparent 95%);
   }
   .hv2--photo .hv2-photo img { object-position: 46% 50%; }
+  .hv2--photo .hv2-photo__ray { --ray-oy: .5; }
   .hv2--photo .hv2-photo__media::after {
     background: linear-gradient(90deg,
       color-mix(in srgb, var(--bg-3) 45%, transparent) 0%,
@@ -1236,3 +1739,442 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
   .hv2--photo { --hp-copy: calc(3 * var(--hp-fs) + 4 * clamp(14px, 2.4vh, 26px) + 294px); }
   .hv2--photo .hv2-actions { align-items: flex-start; }
 }
+
+/* Home "Two numbers decide the click": option A, editorial split (owner, 9 October 2026). */
+/* Option A, "Editorial split" (.dkpi--a-split): Home, "Two numbers decide the click".
+   Heading block on the left, the two KPIs stacked on the right as rows. Each row has the tag and a large
+   abbreviation lockup (abbreviation | full name), the explanation under a hairline, and a decorative motif:
+   FCP = a sweep arc that draws on view around a small page glyph; SoLV = concentric radius rings with the
+   inner ring highlighted. The motifs are aria-hidden and carry no numbers or text.
+   Every rule is scoped to .dkpi--a-split, so the 11 other pages that use .dkpi are untouched.
+   Colours are tokens only (or color-mix of tokens); inside .surface-light they resolve to the light set
+   from medimarketing-tokens.css (dark navy --ink, slate --ink-2, deep teal --accent, white --surface).
+   Motion: the motifs key off the existing reveal (.reveal -> .in, added by the page script on view, or at
+   once under reduced motion). The start states live under .js only, so without JS the motifs show finished;
+   under prefers-reduced-motion nothing moves. */
+
+/* ---- section frame ---------------------------------------------------------------------------------- */
+/* Both flow seams (top wave + fade, bottom fade) stay in place and unchanged. They are drawn in --bg over
+   a --bg section, so they read as no-ops here, but they sit above the container (z-index 2) and would
+   wash out any content inside their bands. Lifting the container above them is what lets the padding come
+   in: the top keeps only the wave's height plus a gap (was ~258px at 1440, now ~133px). */
+.dio.dio--light.dkpi--a-split {
+  padding-top: calc(clamp(46px, 6.5vw, 84px) + clamp(22px, 3.4vw, 50px));
+  padding-bottom: clamp(56px, 7vw, 100px);
+}
+.dkpi.dkpi--a-split .container { z-index: 3; }
+/* The hexagon background pattern on this light section too (owner, 9 October 2026): the same drawing as
+   the dark sections, darkened by a filter towards the light surface's deep teal so it reads on --bg. It sits
+   below the seams (z-index 1 < 2), stays clear of the top wave, and fades out towards the bottom. */
+.dio.dkpi--a-split::before {
+  content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: var(--hex-a-light, .16);
+  background: url(../img/hex-connections.webp) var(--hex-pos) / var(--hex-size) auto repeat-y;
+  filter: brightness(.5) saturate(1.35);
+  -webkit-mask-image: linear-gradient(180deg, transparent 90px, var(--bg) 190px),
+                      radial-gradient(120% 115% at 50% 20%, var(--bg) 0%, var(--bg) 30%, transparent 78%);
+  -webkit-mask-composite: source-in;
+          mask-image: linear-gradient(180deg, transparent 90px, var(--bg) 190px),
+                      radial-gradient(120% 115% at 50% 20%, var(--bg) 0%, var(--bg) 30%, transparent 78%);
+          mask-composite: intersect;
+}
+/* The pattern fades out around the heading block so its lines never sit behind the copy: a soft veil in the
+   section's own --bg, inside the container (above the pattern layer): a blurred block, solid behind every
+   line of the copy (60px of margin, about two blur radii) and fading to nothing beyond it. */
+.dkpi--a-split .s-head { position: relative; }
+.dkpi--a-split .s-head::after {
+  content: ""; position: absolute; inset: -60px -72px; z-index: -1; pointer-events: none;
+  background: var(--bg); border-radius: 48px; filter: blur(28px);
+}
+/* soft accent glow behind the rows. It is a layer ABOVE the seams (z-index 2, later in the DOM) and below
+   the container, so the seams' --bg paint can never show as bands over it. */
+.dio.dkpi--a-split::after {
+  content: ""; position: absolute; inset: 0; z-index: 2; pointer-events: none;
+  background:
+    radial-gradient(44% 60% at 76% 52%, color-mix(in srgb, var(--accent) 9%, transparent), transparent 72%),
+    radial-gradient(30% 44% at 10% 46%, color-mix(in srgb, var(--accent) 5%, transparent), transparent 70%);
+}
+
+/* ---- layout: stacked below 1024, split at 1024+ --------------------------------------------------------- */
+.dkpi--a-split .dkpi__split { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(28px, 5vw, 44px); }
+
+.dkpi--a-split .s-head { max-width: 620px; margin: 0; text-align: left; }
+.dkpi--a-split .s-head .eyebrow { margin-bottom: 18px; line-height: 1.45; }
+.dkpi--a-split .s-head h2 { margin-bottom: 18px; }
+.dkpi--a-split .s-head p { margin: 0; max-width: 46ch; color: color-mix(in srgb, var(--ink-2) 82%, var(--ink)); }
+
+.dkpi--a-split .dkpi__grid { grid-template-columns: minmax(0, 1fr); gap: clamp(14px, 1.6vw, 20px); }
+
+@media (min-width: 1024px) {
+  .dkpi--a-split .dkpi__split {
+    grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+    gap: clamp(48px, 6vw, 96px); align-items: start;
+  }
+  .dkpi--a-split .s-head { padding-top: clamp(20px, 2.4vw, 30px); }
+  .dkpi--a-split .s-head h2 { font-size: clamp(2.3rem, 4vw, 3.6rem); line-height: 1.03; }
+}
+
+/* ---- the rows ------------------------------------------------------------------------------------------- */
+.dkpi--a-split .dkpi__card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "tag  motif"
+    "abbr motif"
+    "text text";
+  column-gap: clamp(14px, 2.4vw, 28px);
+  align-items: center;
+  padding: clamp(20px, 2.4vw, 30px) clamp(20px, 2.8vw, 36px) clamp(20px, 2.4vw, 30px);
+  border-radius: 20px;
+  border-color: var(--line);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+.dkpi--a-split .dkpi__card::before {
+  height: 100%;
+  background: radial-gradient(70% 90% at 100% 0, color-mix(in srgb, var(--accent) 7%, transparent), transparent 66%);
+}
+
+/* tag text a step deeper than --accent: the middle dot is a ~2px glyph and only clears 4.5:1 on rendered
+   pixels at phone size with the darker mix */
+.dkpi--a-split .dkpi__tag { grid-area: tag; justify-self: start; align-self: end; margin-bottom: 14px;
+  color: color-mix(in srgb, var(--accent) 60%, var(--ink)); }
+
+.dkpi--a-split .dkpi__abbr {
+  grid-area: abbr; align-self: start;
+  display: flex; align-items: center; gap: clamp(12px, 1.4vw, 18px);
+  margin: 0;
+  font-size: clamp(2.5rem, 4.2vw, 3.5rem); line-height: .92; letter-spacing: -.03em;
+}
+.dkpi--a-split .dkpi__abbr .full {
+  display: block; margin: 0; box-sizing: content-box; max-width: 8.6em; text-wrap: wrap;
+  padding-left: clamp(12px, 1.4vw, 18px);
+  border-left: 2px solid color-mix(in srgb, var(--accent) 34%, transparent);
+  font: 700 clamp(.9rem, .3vw + .82rem, 1rem)/1.25 var(--font); letter-spacing: 0;
+  color: var(--accent);
+}
+
+.dkpi--a-split .dkpi__card > p {
+  grid-area: text;
+  margin: clamp(16px, 1.8vw, 22px) 0 0; padding-top: clamp(14px, 1.6vw, 18px);
+  border-top: 1px solid var(--divider);
+  font-size: var(--fs-body); line-height: 1.6; color: color-mix(in srgb, var(--ink-2) 82%, var(--ink));
+}
+
+/* ---- motifs (decorative) ------------------------------------------------------------------------------------ */
+.dkpi--a-split .dkpi__motif {
+  grid-area: motif; align-self: center;
+  width: clamp(88px, 8.4vw, 120px); height: auto; aspect-ratio: 1; overflow: visible;
+  fill: none; stroke-linecap: round;
+}
+.dkpi--a-split .dkpi__motif * { transform-box: view-box; transform-origin: 60px 60px; }
+
+/* FCP: sweep */
+.dkpi--a-split .m-stop--a { stop-color: var(--accent); stop-opacity: .28; }
+.dkpi--a-split .m-stop--b { stop-color: var(--ink); stop-opacity: 1; }
+.dkpi--a-split .m-orbit { stroke: var(--line-2); stroke-width: 1.4; stroke-dasharray: .1 5.2; }
+.dkpi--a-split .m-track { stroke: var(--surface-2); stroke-width: 9; }
+.dkpi--a-split .m-sweep { stroke: url(#dkpiA-sweep); stroke-width: 9; }
+.dkpi--a-split .m-head__halo { fill: color-mix(in srgb, var(--accent) 16%, transparent); stroke: none; }
+.dkpi--a-split .m-head__dot  { fill: var(--surface); stroke: var(--ink); stroke-width: 3; }
+.dkpi--a-split .m-page__sheet { fill: var(--surface); stroke: color-mix(in srgb, var(--accent) 55%, transparent); stroke-width: 1.6; }
+.dkpi--a-split .m-page__bar { stroke: none; fill: color-mix(in srgb, var(--accent) 34%, transparent); }
+.dkpi--a-split .m-page__bar--1 { fill: var(--ink); }
+
+/* SoLV: rings */
+.dkpi--a-split .m-ring { stroke: var(--line-2); stroke-width: 1.4; }
+.dkpi--a-split .m-ring--4 { stroke-dasharray: .1 5.2; }
+.dkpi--a-split .m-ring--3 { stroke: color-mix(in srgb, var(--accent) 22%, transparent); }
+.dkpi--a-split .m-ring--2 { stroke: color-mix(in srgb, var(--accent) 40%, transparent); }
+.dkpi--a-split .m-radius { stroke: color-mix(in srgb, var(--accent) 45%, transparent); stroke-width: 1.4; stroke-dasharray: 3 3; }
+.dkpi--a-split .m-radius__end { fill: var(--accent); stroke: none; }
+.dkpi--a-split .m-core__fill { fill: color-mix(in srgb, var(--accent) 14%, transparent); stroke: none; }
+.dkpi--a-split .m-core { stroke: var(--accent); stroke-width: 4; }
+.dkpi--a-split .m-pin__halo { fill: var(--surface); stroke: none; }
+.dkpi--a-split .m-pin { fill: var(--ink); stroke: none; }
+
+/* ---- motion (JS on, motion allowed): start states, then the card's .in plays them ------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .js .dkpi--a-split .m-sweep { stroke-dasharray: 185; stroke-dashoffset: 185;
+    transition: stroke-dashoffset 1.5s var(--ease-out) .25s; }
+  .js .dkpi--a-split .m-head { transform: rotate(-240deg); opacity: 0;
+    transition: transform 1.5s var(--ease-out) .25s, opacity .3s linear .25s; }
+  .js .dkpi--a-split .m-page__bar { opacity: 0; transform: scaleX(.4); transform-box: fill-box; transform-origin: 0 50%;
+    transition: opacity .45s var(--ease-out), transform .6s var(--ease-out); }
+  .js .dkpi--a-split .m-page__bar--1 { transition-delay: 1.05s; }
+  .js .dkpi--a-split .m-page__bar--2 { transition-delay: 1.2s; }
+  .js .dkpi--a-split .m-page__bar--3 { transition-delay: 1.35s; }
+
+  .js .dkpi--a-split .m-ring, .js .dkpi--a-split .m-core__fill { opacity: 0; transform: scale(.72);
+    transition: opacity .7s var(--ease-out), transform 1.1s var(--ease-out); }
+  .js .dkpi--a-split .m-ring--2 { transition-delay: .35s; }
+  .js .dkpi--a-split .m-ring--3 { transition-delay: .5s; }
+  .js .dkpi--a-split .m-ring--4 { transition-delay: .65s; }
+  .js .dkpi--a-split .m-core__fill { transition-delay: .2s; }
+  .js .dkpi--a-split .m-core { stroke-dasharray: 126; stroke-dashoffset: 126;
+    transition: stroke-dashoffset 1.2s var(--ease-out) .3s; }
+  .js .dkpi--a-split .m-radius, .js .dkpi--a-split .m-radius__end { opacity: 0; transition: opacity .5s linear 1.1s; }
+
+  .dkpi--a-split .dkpi__card.in .m-sweep,
+  .dkpi--a-split .dkpi__card.in .m-core { stroke-dashoffset: 0; }
+  .dkpi--a-split .dkpi__card.in .m-head { transform: none; opacity: 1; }
+  .dkpi--a-split .dkpi__card.in .m-page__bar,
+  .dkpi--a-split .dkpi__card.in .m-ring,
+  .dkpi--a-split .dkpi__card.in .m-core__fill { opacity: 1; transform: none; }
+  .dkpi--a-split .dkpi__card.in .m-radius,
+  .dkpi--a-split .dkpi__card.in .m-radius__end { opacity: 1; }
+}
+
+/* ---- small screens ----------------------------------------------------------------------------------------- */
+/* below 600 the tag takes its own full row and the motif sits beside the abbreviation lockup, so the tag
+   pill never has to wrap inside a column narrowed by the motif */
+@media (max-width: 599px) {
+  .dkpi--a-split .dkpi__card { grid-template-areas: "tag tag" "abbr motif" "text text"; }
+  .dkpi--a-split .dkpi__abbr { flex-direction: column; align-items: flex-start; gap: 8px; align-self: center; }
+  .dkpi--a-split .dkpi__abbr .full { padding-left: 0; border-left: 0; max-width: none; }
+  .dkpi--a-split .dkpi__motif { width: clamp(66px, 20vw, 84px); }
+}
+/* the eyebrow stays on one line down to 320: tighter tracking under 375, and no leading rule under 360 */
+@media (max-width: 374px) {
+  .dkpi--a-split .s-head .eyebrow { letter-spacing: .14em; }
+}
+@media (max-width: 359px) {
+  .dkpi--a-split .s-head .eyebrow::before { display: none; }
+}
+
+/* Home "What a patient sees after the tap": option B, versus split (owner, 9 October 2026). */
+/* Option B, "Versus split" (.dfcp--b-versus): Home, "What a patient sees after the tap" (KPI 01, FCP).
+   One split frame instead of two cards: the competitor half is tinted warm (the danger signal colour),
+   the SGEN CMS half is tinted teal (--glow), and the two halves meet on a slanted seam with a round
+   "vs" mark on it. Each half is centred: name + flag, caption, a larger gauge, the big reading under it,
+   then the yes/no lines. The heading block sits above (eyebrow + h2 on the left, intro on the right from
+   900px up); the method note stays under the frame.
+   Every word, number, flag, caption, aria-label and link is the original's. The SVG gauges are the
+   original drawings; the only markup change inside them is pathLength="1" on the two fill arcs so the
+   arcs can draw on with the needle. The "vs" mark is a CSS glyph on an aria-hidden element (alt text
+   empty), and the check / cross next to Yes / No are CSS shapes: neither adds text to the page.
+   Every rule is scoped to .dfcp--b-versus, so the 9 other pages that use .dfcp are untouched.
+   Colours are tokens only (or color-mix of tokens).
+   Motion keys off the page script's existing hooks: .reveal -> .in (the halves slide in from their own
+   sides, the "vs" mark pops in between them), [data-fcp] -> .is-in (each needle swings from the start of
+   its track to data-ndl while its fill arc draws behind it), .count[data-to] counts up. Without JS the
+   gauges show finished (needle hidden, as on the base site); under prefers-reduced-motion nothing moves. */
+
+/* ---- section frame --------------------------------------------------------------------------------------- */
+/* Shorter padding than the base .dfcp (128px a side at 1440) so the whole section fits one 900px screen. */
+.dio.dfcp.dfcp--b-versus { padding-block: clamp(48px, 4.6vw, 66px); }
+
+/* ---- heading block: stacked below 900px, two columns from 900px ------------------------------------------- */
+.dfcp--b-versus .s-head { max-width: none; margin-bottom: clamp(24px, 2.8vw, 36px); }
+.dfcp--b-versus .s-head h2 { max-width: 15ch; }
+.dfcp--b-versus .s-head p { max-width: 52ch; margin: 0; }
+@media (min-width: 900px) {
+  .dfcp--b-versus .s-head {
+    display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    column-gap: clamp(32px, 5vw, 80px); align-items: end;
+  }
+  .dfcp--b-versus .s-head .eyebrow { grid-column: 1; grid-row: 1; justify-self: start; }
+  .dfcp--b-versus .s-head h2 { grid-column: 1; grid-row: 2; margin: 0; max-width: none; }
+  /* the intro spans the eyebrow's row too: a long intro (the industry pages run to 8 lines) grows up beside
+     the eyebrow instead of pushing the frame down; it stays bottom-aligned with the heading */
+  .dfcp--b-versus .s-head p { grid-column: 2; grid-row: 1 / span 2; padding-bottom: .3em; }
+}
+
+/* ---- the split frame ----------------------------------------------------------------------------------------
+   --S is the seam's slant (how far its top sits right of its bottom), --g half the seam's width. The halves
+   overlap by --S and each is clipped on the seam side, so the frame's own background shows through only along
+   the seam: a hairline running from the warm colour at the top to the teal at the bottom.
+   Rows are shared (subgrid) so the two gauges, readings and yes/no rules line up across the seam. */
+.dfcp--b-versus .dfcp__versus {
+  --S: clamp(22px, 2.8vw, 40px);
+  --g: 1.5px;
+  --pad-x: clamp(20px, 2.8vw, 44px);
+  position: relative; isolation: isolate;
+  display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-rows: repeat(5, auto);
+  gap: 0; max-width: none; margin-inline: 0; align-items: stretch;
+  border-radius: calc(var(--r-surface) + 10px); overflow: clip;
+  background: linear-gradient(180deg, var(--sig-danger) 0%, color-mix(in srgb, var(--sig-danger) 40%, var(--glow)) 50%, var(--glow) 100%);
+  box-shadow: var(--shadow-elev);
+}
+
+.dfcp--b-versus .dfcp__half {
+  grid-row: 1 / span 5;
+  display: grid; grid-template-rows: subgrid; justify-items: center; text-align: center;
+  padding: clamp(24px, 2.8vw, 38px) var(--pad-x) clamp(24px, 2.6vw, 34px);
+  position: relative; border: 0; border-radius: 0;
+}
+.dfcp--b-versus .dfcp__half--bad {
+  grid-column: 1;
+  margin-right: calc(var(--S) / -2);
+  padding-right: calc(var(--pad-x) + var(--S) / 2);
+  clip-path: polygon(0 0, calc(100% - var(--g)) 0, calc(100% - var(--S) - var(--g)) 100%, 0 100%);
+  background:
+    radial-gradient(54% 36% at 50% 44%, color-mix(in srgb, var(--sig-danger) 22%, transparent), transparent 72%),
+    repeating-linear-gradient(135deg, color-mix(in srgb, var(--sig-danger) 7%, transparent) 0 2px, transparent 2px 15px),
+    linear-gradient(195deg, color-mix(in srgb, var(--sig-danger) 12%, var(--bg-2)) 0%, color-mix(in srgb, var(--sig-danger) 26%, var(--bg-3)) 100%);
+  box-shadow: inset 0 3px 0 var(--sig-danger);
+}
+.dfcp--b-versus .dfcp__half--good {
+  grid-column: 2;
+  margin-left: calc(var(--S) / -2);
+  padding-left: calc(var(--pad-x) + var(--S) / 2);
+  clip-path: polygon(calc(var(--S) + var(--g)) 0, 100% 0, 100% 100%, var(--g) 100%);
+  background:
+    radial-gradient(54% 36% at 50% 44%, color-mix(in srgb, var(--glow) 17%, transparent), transparent 72%),
+    linear-gradient(165deg, color-mix(in srgb, var(--glow) 16%, var(--bg-2)) 0%, color-mix(in srgb, var(--glow) 11%, var(--bg-3)) 100%);
+  box-shadow: inset 0 3px 0 var(--glow);
+}
+
+/* the "vs" mark: centred on the seam (the seam crosses the frame's centre point) */
+.dfcp--b-versus .dfcp__vs {
+  grid-column: 1 / -1; grid-row: 1 / -1; align-self: center; justify-self: center; z-index: 3;
+  display: grid; place-items: center;
+  width: clamp(54px, 5vw, 70px); aspect-ratio: 1; border-radius: 50%;
+  border: 2px solid transparent;
+  background:
+    linear-gradient(var(--bg-3), var(--bg-3)) padding-box,
+    linear-gradient(135deg, var(--sig-danger), var(--glow)) border-box;
+  box-shadow: 0 0 0 6px color-mix(in srgb, var(--bg-3) 55%, transparent), var(--shadow-card);
+  pointer-events: none;
+}
+.dfcp--b-versus .dfcp__vs::before {
+  content: "vs"; content: "vs" / "";
+  font: italic 800 clamp(1rem, 1.3vw, 1.3rem)/1 var(--font); letter-spacing: -.01em; color: var(--ink);
+  transform: translateY(-.04em);
+}
+
+/* ---- inside each half -------------------------------------------------------------------------------------- */
+.dfcp--b-versus .dfcp__card-head { justify-content: center; flex-wrap: wrap; gap: 8px 12px; margin: 0 0 10px; align-self: start; }
+.dfcp--b-versus .dfcp__who { font-size: clamp(1.05rem, .45vw + .92rem, 1.3rem); }
+.dfcp--b-versus .dfcp__flag { font-size: .66rem; padding: 6px 11px; }
+/* the teal flag gets a solid fill (its tint mixed into --bg-3, like the base red flag) so it keeps 4.5:1 over the
+   brighter top of the teal half; the base flag is see-through (--sig-good-soft) */
+.dfcp--b-versus .dfcp__flag.good { background: color-mix(in srgb, var(--glow) 12%, var(--bg-3)); }
+/* below 900px the halves are too narrow for name + flag on one line on both sides: stack both, so the halves match */
+@media (max-width: 899px) {
+  .dfcp--b-versus .dfcp__card-head { flex-direction: column; gap: 9px; }
+}
+.dfcp--b-versus .dfcp__cap {
+  max-width: 48ch; margin: 0 0 clamp(8px, 1vw, 12px); align-self: start; text-wrap: balance;
+  font-size: .88rem; color: color-mix(in srgb, var(--ink-2) 70%, var(--ink));
+}
+
+.dfcp--b-versus .dfcp__gauge { width: 100%; max-width: clamp(210px, 24vw, 320px); margin: 0; align-self: end; }
+.dfcp--b-versus .dfcp__gauge .track { stroke: color-mix(in srgb, var(--ink-3) 36%, transparent); }
+
+/* the gauge drawing has empty space under its hub, so the reading tucks up into it */
+.dfcp--b-versus .dfcp__gauge-read { margin: calc(-1 * clamp(2px, .7vw, 10px)) 0 clamp(16px, 1.8vw, 24px); padding-top: 0; border-top: 0; }
+.dfcp--b-versus .dfcp__gauge-read .sec { font-size: clamp(2.9rem, 4.4vw, 4.3rem); line-height: .95; font-variant-numeric: tabular-nums; }
+.dfcp--b-versus .dfcp__gauge-read .u { margin-top: 8px; font-size: .7rem; letter-spacing: .14em; color: color-mix(in srgb, var(--ink-2) 70%, var(--ink)); }
+
+.dfcp--b-versus .dfcp__metric { width: 100%; max-width: 400px; margin: 0; align-self: start; padding-top: 14px; text-align: left; }
+.dfcp--b-versus .dfcp__half--bad  .dfcp__metric { border-top-color: color-mix(in srgb, var(--sig-danger) 34%, transparent); }
+.dfcp--b-versus .dfcp__half--good .dfcp__metric { border-top-color: color-mix(in srgb, var(--glow) 30%, transparent); }
+.dfcp--b-versus .dfcp__metric .ln { align-items: center; font-size: .9rem; color: color-mix(in srgb, var(--ink-2) 70%, var(--ink)); }
+/* a cross / check in a ring before No / Yes (CSS shapes in the answer's own colour, no text) */
+.dfcp--b-versus .dfcp__metric .ln b { position: relative; display: inline-flex; align-items: center; gap: 7px; flex: none; }
+.dfcp--b-versus .dfcp__metric .ln b::before {
+  content: ""; flex: none; width: 17px; height: 17px; border-radius: 50%; box-sizing: border-box;
+  border: 1.5px solid currentColor;
+}
+.dfcp--b-versus .dfcp__metric .ln.bad b::before {
+  background:
+    linear-gradient(45deg,  transparent calc(50% - .8px), currentColor calc(50% - .8px) calc(50% + .8px), transparent calc(50% + .8px)) center / 7px 7px no-repeat,
+    linear-gradient(-45deg, transparent calc(50% - .8px), currentColor calc(50% - .8px) calc(50% + .8px), transparent calc(50% + .8px)) center / 7px 7px no-repeat;
+}
+.dfcp--b-versus .dfcp__metric .ln.good b::after {
+  content: ""; position: absolute; left: 6px; top: 50%; width: 3.5px; height: 7px;
+  border: solid currentColor; border-width: 0 1.6px 1.6px 0;
+  transform: translateY(-62%) rotate(45deg);
+}
+
+/* ---- motion -------------------------------------------------------------------------------------------------- */
+/* halves slide in from their own sides; the frame clips them, so they meet at the seam */
+.js .dfcp--b-versus .dfcp__half--bad.reveal  { transform: translateX(-36px); }
+.js .dfcp--b-versus .dfcp__half--good.reveal { transform: translateX(36px); }
+.js .dfcp--b-versus .dfcp__half.reveal.in    { transform: none; }
+.js .dfcp--b-versus .dfcp__vs.reveal    { transform: scale(.5) rotate(-24deg); }
+.js .dfcp--b-versus .dfcp__vs.reveal.in { transform: none; }
+
+/* the needle starts on the start of its track (not straight up) and swings to data-ndl on .is-in (base rule);
+   the fill arc draws on behind it over the same time and curve, so the arc's tip follows the needle.
+   The arcs carry pathLength="1"; the start offsets leave the round caps out of sight before the draw. */
+.dfcp--b-versus .dfcp__gauge .needle { transform: rotate(-90deg); }
+.dfcp--b-versus .dfcp__gauge .fill-bad,
+.dfcp--b-versus .dfcp__gauge .fill-good {
+  stroke-dasharray: 1 2;
+  transition: stroke-dashoffset 2.8s var(--ease-out, var(--ease)) .2s;
+}
+.dfcp--b-versus .dfcp__gauge .fill-bad  { stroke-dashoffset: 1.18; }
+.dfcp--b-versus .dfcp__gauge .fill-good { stroke-dashoffset: 1.04; }
+.dfcp--b-versus .dfcp__card.is-in .dfcp__gauge .fill-bad,
+.dfcp--b-versus .dfcp__card.is-in .dfcp__gauge .fill-good,
+html:not(.js) .dfcp--b-versus .dfcp__gauge .fill-bad,
+html:not(.js) .dfcp--b-versus .dfcp__gauge .fill-good { stroke-dashoffset: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  .dfcp--b-versus .dfcp__gauge .needle,
+  .dfcp--b-versus .dfcp__gauge .fill-bad,
+  .dfcp--b-versus .dfcp__gauge .fill-good { transition: none !important; }
+  .js .dfcp--b-versus .dfcp__half.reveal,
+  .js .dfcp--b-versus .dfcp__vs.reveal { transform: none !important; }
+}
+
+/* ---- phones: the halves stack, the seam turns to a slanted horizontal cut, the "vs" mark sits on it -------- */
+@media (max-width: 639px) {
+  .dfcp--b-versus .dfcp__versus {
+    --S: 26px; --pad-x: clamp(16px, 5vw, 24px);
+    grid-template-columns: minmax(0, 1fr); grid-template-rows: none;
+    background: linear-gradient(90deg, var(--sig-danger), var(--glow));
+  }
+  .dfcp--b-versus .dfcp__half { grid-row: auto; grid-column: 1; display: flex; flex-direction: column; align-items: center; }
+  .dfcp--b-versus .dfcp__half--bad {
+    margin: 0 0 calc(var(--S) * -1);
+    padding: 28px var(--pad-x) calc(36px + var(--S));
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - var(--S) - var(--g)), 0 calc(100% - var(--g)));
+  }
+  .dfcp--b-versus .dfcp__half--good {
+    margin: 0;
+    padding: calc(46px + var(--S)) var(--pad-x) 28px;
+    clip-path: polygon(0 calc(var(--S) + var(--g)), 100% var(--g), 100% 100%, 0 100%);
+  }
+  .dfcp--b-versus .dfcp__gauge { max-width: 240px; }
+  /* the mark is a zero-height row between the halves; its negative margins centre it on the seam */
+  .dfcp--b-versus .dfcp__vs {
+    grid-row: auto; width: 56px;
+    margin: calc(var(--S) / 2 - 28px) auto calc(-28px - var(--S) / 2);
+  }
+  .dfcp--b-versus .dfcp__metric { max-width: 340px; }
+}
+/* in the phone stack the halves are flex columns, where align-self is horizontal: centre every child */
+@media (max-width: 639px) {
+  .dfcp--b-versus .dfcp__half > * { align-self: center; }
+}
+
+/* Fit one screen (owner, 9 October 2026): from 900px wide the section's vertical sizes follow the screen height,
+   so the whole section (heading, the split frame, the note) fits below the 58px scrolled header on 1440x900,
+   1366x768 and 1280x800 screens. Text keeps its usual minimum sizes. Phones still scroll. */
+@media (min-width: 900px) {
+  .dio.dfcp.dfcp--b-versus { padding-block: clamp(18px, 3.6vh, 66px); }
+  .dfcp--b-versus .s-head { margin-bottom: clamp(12px, 2.4vh, 36px); }
+  .dfcp--b-versus .s-head h2 { font-size: clamp(2.1rem, min(4.6vw, 6.4vh), 3.6rem); }
+  /* on short screens the intro also steps down toward the lead's own 18px minimum (never past --fs-lead) */
+  .dfcp--b-versus .s-head p { font-size: min(var(--fs-lead), max(1.125rem, 2.4vh)); }
+  .dfcp--b-versus .dfcp__half { padding: clamp(14px, 2.6vh, 38px) var(--pad-x) clamp(14px, 2.4vh, 34px); }
+  .dfcp--b-versus .dfcp__card-head { margin-bottom: clamp(4px, .9vh, 10px); }
+  .dfcp--b-versus .dfcp__gauge { max-width: clamp(170px, min(24vw, 33vh), 320px); }
+  .dfcp--b-versus .dfcp__gauge-read { margin-bottom: clamp(8px, 1.6vh, 24px); }
+  .dfcp--b-versus .dfcp__gauge-read .sec { font-size: clamp(2.3rem, min(4.4vw, 7.2vh), 4.3rem); }
+  .dfcp--b-versus .dfcp__metric { padding-top: clamp(6px, 1.2vh, 14px); }
+}
+.dfcp--b-versus .rv__note { margin-top: clamp(12px, 2.2vh, 30px); }
+/* Readability (owner's readability pass, 9 October 2026): from 900px the intro sits in the right column, over the
+   brighter part of the hex pattern, so a soft veil in the section's own --bg sits behind it (as behind the KPI
+   heading). The red "No" gets a little of --ink so it keeps its old contrast over the warmer foot of the red half. */
+@media (min-width: 900px) {
+  .dfcp--b-versus .s-head p { position: relative; isolation: isolate; }
+  .dfcp--b-versus .s-head p::before {
+    content: ""; position: absolute; inset: -30px -40px; z-index: -1; pointer-events: none;
+    background: var(--bg); border-radius: 40px; filter: blur(22px);
+  }
+}
+.dfcp--b-versus .dfcp__metric .ln.bad b { color: color-mix(in srgb, var(--sig-danger-2) 78%, var(--ink)); }

@@ -15,7 +15,7 @@
   color: var(--accent-2); background: color-mix(in srgb, var(--accent) 14%, transparent); }
 .rf__pill.is-all .n { color: var(--cta-ink); background: color-mix(in srgb, var(--bg-3) 22%, transparent); }
 .rf__pill .soon { font: 700 .58rem/1 var(--body); letter-spacing: .08em; text-transform: uppercase;
-  padding: 3px 7px; border-radius: var(--r-pill); color: var(--ink-3);
+  padding: 3px 7px; border-radius: var(--r-pill); color: var(--ink-2);
   background: color-mix(in srgb, var(--ink-3) 16%, transparent); }
 
 .rv { padding-block: var(--pad); }
@@ -80,7 +80,7 @@
 .rv__card--soon .lnk:hover { color: var(--accent); }
 .rv__card--soon .lnk svg { width: 15px; height: 15px; }
 .rv__note { margin-top: clamp(22px, 2.6vw, 30px); text-align: center;
-  font: 400 .84rem/1.5 var(--body); color: var(--ink-2); max-width: 70ch; margin-inline: auto; }
+  font: 400 .84rem/1.5 var(--body); color: color-mix(in srgb, var(--ink-2) 60%, var(--ink)); max-width: 70ch; margin-inline: auto; }
 .rv__note a { color: var(--accent-2); }
 
 @media (max-width: 1023px) {
@@ -94,16 +94,16 @@
 .dbf__filter { display: flex; flex-wrap: wrap; gap: 10px; margin-top: clamp(24px, 3vw, 34px); }
 .dbf__chip { display: inline-flex; align-items: center; gap: .55em;
   font: 700 .8rem/1 var(--body); letter-spacing: .02em; padding: 11px 17px; border-radius: var(--r-pill);
-  color: var(--accent); background: color-mix(in srgb, var(--accent) 9%, transparent);
+  color: color-mix(in srgb, var(--accent) 60%, var(--ink)); background: color-mix(in srgb, var(--accent) 9%, transparent);
   border: 1px solid var(--line-2); transition: color var(--t-fast) var(--ease), background var(--t-fast) var(--ease), transform var(--t-fast) var(--ease); }
 .dbf__chip:hover { transform: translateY(-2px); color: var(--cta-ink); background: var(--grad-accent); text-decoration: none; }
 .dbf__chip.is-active { color: var(--cta-ink); background: var(--grad-accent); border-color: transparent; }
 .dbf__chip .n { font: 700 .68rem/1 var(--body); padding: 2px 8px; border-radius: var(--r-pill);
-  background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
+  background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--ink); }
 .dbf__chip:hover .n, .dbf__chip.is-active .n { background: color-mix(in srgb, var(--bg-3) 22%, transparent); color: var(--cta-ink); }
 .dbf__chip.is-soon { color: var(--ink-3); background: transparent; border-style: dashed; cursor: default; }
 .dbf__chip.is-soon:hover { transform: none; color: var(--ink-3); background: transparent; }
-.dbf__chip.is-soon .n { background: color-mix(in srgb, var(--ink-3) 14%, transparent); color: var(--ink-3); }
+.dbf__chip.is-soon .n { background: color-mix(in srgb, var(--ink-3) 14%, transparent); color: var(--ink-2); }
 
 .dpin { padding-block: var(--pad); }
 .dpin .container { position: relative; z-index: 1; }
@@ -244,10 +244,10 @@ html:not(.js) .dloop__ring .arc { stroke-dashoffset: 0; }
 .dloop__step .num { width: 20px; height: 20px; flex: none; display: grid; place-items: center; border-radius: 50%;
   font: 800 .66rem/1 var(--font); color: var(--cta-ink); background: var(--grad-accent); }
 .dloop__node h3 { font: 700 1rem/1.2 var(--font); color: var(--ink); margin: 0 0 5px; }
-.dloop__node p { font: 400 .8rem/1.45 var(--body); color: var(--ink-2); margin: 0; }
+.dloop__node p { font: 400 .8rem/1.45 var(--body); color: color-mix(in srgb, var(--ink-2) 50%, var(--ink)); margin: 0; }
 .dloop__node .tool { display: inline-flex; align-items: center; gap: .45em; margin-top: 10px;
   font: 700 .62rem/1 var(--body); padding: 6px 10px; border-radius: var(--r-pill);
-  color: var(--accent); background: color-mix(in srgb, var(--accent) 11%, transparent); border: 1px solid var(--line-2); }
+  color: color-mix(in srgb, var(--accent-2) 35%, var(--ink)); background: color-mix(in srgb, var(--accent) 11%, transparent); border: 1px solid var(--line-2); }
 .dloop__node .tool.pro { color: var(--accent-2); }
 
 .dloop__note { margin-top: clamp(26px,3.4vw,44px); max-width: 640px; margin-inline: auto; text-align: center;
@@ -350,7 +350,7 @@ html:not(.js) .dloop__ring .arc { stroke-dashoffset: 0; }
 .dlegal__doc h2:first-of-type, .dprose h2:first-of-type { margin-top: 0; }
 .dlegal__doc h3, .dprose h3 { font: 700 1.02rem/1.3 var(--font); color: var(--ink); margin: 1.6em 0 .4em; }
 .dprose h4 { font: 700 .95rem/1.3 var(--font); color: var(--ink); margin: 1.3em 0 .3em; }
-.dlegal__doc p, .dlegal__doc li, .dprose p, .dprose li { font: 400 var(--fs-body)/1.7 var(--body); color: var(--ink-2); }
+.dlegal__doc p, .dlegal__doc li, .dprose p, .dprose li { font: 400 var(--fs-body)/1.7 var(--body); color: color-mix(in srgb, var(--ink-2) 70%, var(--ink)); }
 .dlegal__doc p, .dprose p { margin: 0 0 1em; }
 .dlegal__doc ul, .dlegal__doc ol, .dprose ul, .dprose ol { margin: 0 0 1em; padding-left: 1.3em; display: grid; gap: .35em; }
 .dlegal__doc ul, .dprose ul { list-style: disc; }
