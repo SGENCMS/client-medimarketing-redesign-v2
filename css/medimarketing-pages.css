@@ -270,6 +270,23 @@ html:not(.js) .dloop__ring .arc { stroke-dashoffset: 0; }
 @media (prefers-reduced-motion: reduce) {
   .dloop__ring .arc { transition: none !important; }
 }
+/* Two columns from 1280px (user, 16 October 2026: "title and subtext on the left and the diagram on the right"):
+   eyebrow, heading, intro and the Pro note on the left, vertically centred on the loop; the loop on the right at
+   70% of its column (its side steps reach past the ring by half their width). The container is 1320px here so the
+   heading keeps to 3 lines. Below 1280 the loop has no room beside the copy, so it stays centred under it. */
+@media (min-width: 1280px) {
+  .dloop .container { max-width: 1320px; display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr);
+    grid-template-rows: auto auto; column-gap: clamp(40px, 4vw, 64px); }
+  .dloop .s-head { grid-column: 1; grid-row: 1; align-self: end; margin: 0; max-width: 540px; text-align: left; }
+  .dloop .s-head .eyebrow { justify-content: flex-start; }
+  .dloop .s-head h2 { font-size: clamp(2.2rem, 3.3vw, 3.1rem); line-height: 1.04; }
+  .dloop .s-head p { margin: 0; }
+  .dloop .dloop__note { grid-column: 1; grid-row: 2; align-self: start; margin: clamp(22px, 2.4vw, 32px) 0 0; max-width: 540px; text-align: left; }
+  .dloop .dloop__stage { grid-column: 2; grid-row: 1 / span 2; width: 70%; max-width: 560px; margin: 132px auto; }
+  .dloop .dloop__node { width: min(44%, 248px); }
+  /* the ring's bright arc runs under the top of the lower card, where its step label sits (4.3:1 in WebKit): a touch lighter */
+  .dloop .dloop__node .dloop__step { color: color-mix(in srgb, var(--accent-2) 72%, var(--ink)); }
+}
 .dbf.book-hero, .dbf.legal-hero, .dbf.not-found { padding-bottom: clamp(28px, 3.5vw, 48px); }
 .dbook { padding-block: 0 var(--pad); }
 .dbook .container { position: relative; z-index: 1; }

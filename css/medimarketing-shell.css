@@ -50,7 +50,10 @@
 }
 
 /* Thin rules with round ends (user, 16 October 2026, drawn from their reference), on Home: between "How we scan
-   your radius" and "What we do", and along the top and bottom edges of the final call to action. (One between
+   your radius" and "What we do", and along the top and bottom edges of the final call to action; on The 2-KPI
+   Method between the two white sections ("A tap on a result" and "Each extra second"), on the boundary, which is the
+   middle of that gap (both sections have the same padding); on the light surface its colours are the light set's;
+   and along the top and bottom edges of its teal "Google's marks" section, edge to edge, as on Home's final call to action. (One between
    "Impact from Google" and "Our guarantee" was taken out again: that join is seamless now, user.) A rule is taken
    out of the flow, so nothing moves, and sits above the section's layers. It runs edge to edge (the final call to
    action's two, user: "go from edge to edge"), or, as a .container, exactly as wide as the content column at every
@@ -136,6 +139,9 @@ body { background: var(--bg-3); }
   padding-top: calc(var(--pad) + clamp(70px, 9vw, 130px));
   padding-bottom: calc(var(--pad) + clamp(40px, 6vw, 96px));
 }
+/* A light section with no flow seams to make room for keeps the dark sections' padding, so a dark section turned
+   white keeps its layout (The 2-KPI Method, "A tap on a result" and "Each extra second": user, 16 October 2026). */
+.dio.dio--light.dio--light-flat { padding-block: var(--pad); }
 .dio--light .glass {
   background: var(--surface);
   -webkit-backdrop-filter: none; backdrop-filter: none;
@@ -323,6 +329,9 @@ body { background: var(--bg-3); }
 /* After a light section the band starts on the light section's edge: no dark lip above it, and that edge is its top frame. */
 .dio--light + .dpress--ticker { padding-top: 0; }
 .dio--light + .dpress--ticker .dpa::before { content: none; }
+/* After a full-bleed photo hero too (user, 16 October 2026: "remove this gap between hero section and the as seen on
+   band"): the band starts on the hero's foot, its top hairline the seam between them. */
+.hv2--bleed + .dpress--ticker { padding-top: 0; }
 .dpa { position: relative;
   background: linear-gradient(180deg, color-mix(in srgb, var(--bg-3) 30%, transparent), color-mix(in srgb, var(--bg-2) 62%, transparent));
   box-shadow: 0 30px 60px -40px var(--bg-3); }
@@ -501,15 +510,14 @@ body { background: var(--bg-3); }
 .dkpi--select .dka__panel[hidden] { display: none; }
 .js .dkpi--select:not(.is-ready) .dka__panel:not(:first-child) { display: none; }
 
-/* The photo, treated like the Home hero's: dimmed and slightly flattened, then a colour layer of
-   --accent at the hero's strength keeps its light and shade and gives it the brand teal. */
+/* The photo in its natural colour, treated like the full-bleed heroes' (user, 16 October 2026: "have the images here
+   in full color", keeping the gradient behind the text): it was dimmed, flattened and given the brand teal by a
+   colour layer of --accent at .85, which is gone. */
 .dkpi--select .dka__media { position: absolute; inset: 0; z-index: 0; overflow: hidden; isolation: isolate;
   border-radius: inherit; pointer-events: none; background: var(--bg-3); }
 .dkpi--select .dka__media img { position: absolute; inset: 0; width: 100%; height: 100%;
   object-fit: cover; object-position: var(--pos, 50% 50%); transform-origin: var(--pos, 50% 50%);
-  filter: saturate(.8) brightness(.72) contrast(1.08); }
-.dkpi--select .dka__media::before { content: ""; position: absolute; inset: 0; z-index: 1;
-  background: var(--accent); mix-blend-mode: color; opacity: .85; }
+  filter: saturate(.9) brightness(.82); }
 /* Soft edges like the hero's and a light shade under the search bar. */
 .dkpi--select .dka__media::after { content: ""; position: absolute; inset: 0; z-index: 2;
   background:
@@ -774,6 +782,12 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 
 .dshow { padding-block: var(--pad); }
 .dshow .container { position: relative; z-index: 1; }
+/* Industry pages, "Websites built to sell" (user, 16 October 2026: "too narrow because we used too many lines, reduce to
+   2-3 lines, both header and subtitles"): a wider heading block, so from 1024px the headline sets on 2 lines (was 4)
+   and the intro on 2 or 3 even lines, by its length (was 3 to 4, the last often one or two words); balanced, so no
+   short last line. Phones and upright tablets are already as wide as the screen allows. */
+.dshow.ecosystem-block .s-head { max-width: 1100px; }
+.dshow.ecosystem-block .s-head p { max-width: 1000px; text-wrap: balance; }
 .dshow__honest { display: inline-flex; align-items: center; gap: .6em; margin: 14px auto 0;
   font: 600 .8rem/1.3 var(--body); color: var(--ink-2); padding: 8px 14px; border-radius: var(--r-pill);
   background: color-mix(in srgb, var(--accent) 8%, transparent); border: 1px solid var(--line-2); }
@@ -1013,19 +1027,27 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 .ddiff__guar--plain .risk { margin-top: 0; }
 .ddiff__guar .risk b { color: var(--accent-2); }
 
+/* FAQ (user, 16 October 2026, option C of three: "for FAQs lets go with C"): no cards; every question is a row between
+   hairlines, numbered 01, 02 ... in teal (a CSS counter, so each FAQ numbers its own questions), in a wider column; the
+   answer lines up under the question text. All 9 FAQs share it (the 8 industry pages and The 2-KPI Method). The items
+   keep their .glass class in the markup; the card look (ground, border, shadow, sheen) is taken off here. */
 .df { padding-block: var(--pad); }
-.df .container { max-width: 860px; position: relative; z-index: 1; }
+.df .container { max-width: 1040px; position: relative; z-index: 1; }
 .df__head { text-align: center; margin-bottom: clamp(30px, 4vw, 46px); }
 .df__head .eyebrow { justify-content: center; margin-bottom: 16px; }
 .df__head h2 { font: 800 var(--fs-h2)/1.05 var(--font); letter-spacing: -.02em; color: var(--ink); margin: 0; }
-.df__list { display: grid; gap: 12px; }
-.df__item { padding: 4px 4px; overflow: hidden; }
-.df__q { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 18px;
-  padding: 20px 22px; background: transparent; border: 0; cursor: pointer; text-align: left;
-  font: 700 var(--fs-h3)/1.3 var(--font); color: var(--ink);
+.df__list { display: grid; counter-reset: faq; border-top: 1px solid var(--line); }
+.df .df__item.glass { counter-increment: faq; padding: 0; overflow: visible; background: none; border: 0;
+  border-bottom: 1px solid var(--line); border-radius: 0; box-shadow: none; }
+.df .df__item.glass::before { content: none; }
+.df__q { width: 100%; display: flex; align-items: center; justify-content: flex-start; gap: 18px;
+  padding: clamp(18px, 2vw, 26px) 2px; background: transparent; border: 0; cursor: pointer; text-align: left;
+  font: 700 clamp(1.05rem, .4vw + .98rem, 1.25rem)/1.35 var(--font); color: var(--ink);
   transition: color var(--t-fast) var(--ease); }
+.df__q::before { content: counter(faq, decimal-leading-zero); flex: none; width: clamp(40px, 5vw, 64px);
+  font: 800 clamp(1.3rem, 2vw, 1.7rem)/1 var(--font); letter-spacing: -.02em; color: var(--accent); }
 .df__q:hover { color: var(--accent-2); }
-.df__icon { flex: none; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%;
+.df__icon { flex: none; margin-left: auto; width: 30px; height: 30px; display: grid; place-items: center; border-radius: 50%;
   border: 1px solid var(--line); color: var(--accent-2); position: relative;
   transition: background var(--t-fast) var(--ease), border-color var(--t-fast) var(--ease), transform var(--t-base) var(--ease); }
 .df__icon::before, .df__icon::after { content: ""; position: absolute; background: currentColor; border-radius: 2px; }
@@ -1036,7 +1058,8 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 .df__a { display: grid; grid-template-rows: 1fr; transition: grid-template-rows var(--t-base) var(--ease); }
 .js .df__a { grid-template-rows: 0fr; }
 .df__a-inner { overflow: hidden; }
-.df__a p { margin: 0; padding: 0 22px 22px; font: 400 var(--fs-body)/1.6 var(--body); color: var(--ink-2); max-width: 64ch; }
+.df__a p { margin: 0; padding: 0 48px clamp(20px, 2.2vw, 26px) calc(clamp(40px, 5vw, 64px) + 20px);
+  font: 400 var(--fs-body)/1.6 var(--body); color: var(--ink-2); max-width: 64ch; }
 .df__a p a { color: var(--accent-2); }
 .df__item.open .df__a { grid-template-rows: 1fr; }
 
@@ -1049,7 +1072,8 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
    (--glow-top over the glow's 70% height, from the top of the glow box) and back to full by its centre.
    Bottom: this section is see-through (dio--blend) over the fixed page background, so the line where the
    solid section after it begins changed with the scroll position. That section now starts see-through and
-   fades into its own background over --join, so both sides of the line show the same page background. */
+   fades into its own background over --join, so both sides of the line show the same page background (the
+   seamless dark joins below, which now do this at every join between dark sections). */
 /* No clip on this section: the cards' drop shadows run past its bottom edge (the compact layout below leaves
    little room under them), and a clip cut them off in a line. Unclipped, the shadow tails continue into the
    next section's see-through top and fade there; the glow is masked to nothing above this section's top. */
@@ -1058,34 +1082,36 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
   -webkit-mask-image: linear-gradient(180deg, transparent calc(var(--glow-top, -8%) * -100 / 70), var(--bg) 34%);
           mask-image: linear-gradient(180deg, transparent calc(var(--glow-top, -8%) * -100 / 70), var(--bg) 34%);
 }
-.dpf + .dio { --join: clamp(110px, 12vw, 180px); --join-bg: var(--bg-3); background: linear-gradient(180deg, transparent, var(--join-bg) var(--join)); }
-.dpf + .dio.dio--dark { --join-bg: var(--bg); }
-.dpf + .dio > :is(.dio__bed, .dio__grade, .dio__seam, .dio__darkbed) {
-  -webkit-mask-image: linear-gradient(180deg, transparent, var(--bg) var(--join));
-          mask-image: linear-gradient(180deg, transparent, var(--bg) var(--join));
+/* Seamless joins between dark sections. First below pricing (owner, 9 October 2026, above), then Home's "Impact
+   from Google" into "Our guarantee" (user, 16 October 2026: "make this transition look seamless"), now at every such
+   join (user, 16 October 2026, on the dental page's "Share of Local Visibility" into "Impact from Google": "ensure
+   transitions like this will look seamless"). A see-through section (dio--blend) shows the fixed page background, so
+   where it met a solid section the line moved with the scroll; two solid sections met in a step between their
+   grounds. A solid dark section now fades its ground, and its picture layers with it, to see-through over --join
+   along every edge it shares with another dark section: in at the top (--fade-t), out at the foot (--fade-b), each
+   at most half its height. Both sides of the line then show the same page background at any scroll position.
+   Left as they are: the "As seen on" band (its hairlines are the design), the full-bleed photo heroes (they meet
+   that band, or on The 2-KPI Method a teal section built to join them, .dkpi--a-teal) and the footer's top rule.
+   Lines drawn on purpose stay: the rules (.dio__rule) and the tapered hairline under Home's numbers are not
+   layers. The glow box starts --glow-top above the section, so its fade starts at the section's edge, not the
+   box's; it ends well above the foot, so it needs none there. */
+.dio { --join: clamp(110px, 12vw, 180px); --join-bg: var(--bg-3); --fade-t: 0px; --fade-b: 0px; }
+.dio--dark, .hv2-typographic { --join-bg: var(--bg); }
+.dio:not(.dio--light, .dpress--ticker, .hv2--bleed) + .dio:not(.dio--light, .dio--blend, .dpress--ticker, .hv2--bleed) { --fade-t: min(var(--join), 50%); }
+.dio:not(.dio--light, .dio--blend, .dpress--ticker, .hv2--bleed):has(+ .dio:not(.dio--light, .dpress--ticker, .hv2--bleed)) { --fade-b: min(var(--join), 50%); }
+.dio:not(.dio--light, .dpress--ticker, .hv2--bleed) + .dio:not(.dio--light, .dio--blend, .dpress--ticker, .hv2--bleed),
+.dio:not(.dio--light, .dio--blend, .dpress--ticker, .hv2--bleed):has(+ .dio:not(.dio--light, .dpress--ticker, .hv2--bleed)) {
+  background: linear-gradient(180deg, transparent, var(--join-bg) var(--fade-t), var(--join-bg) calc(100% - var(--fade-b)), transparent);
 }
-/* that section's glow box also starts --glow-top above it, so its fade starts at the section's edge, not the box's */
-.dpf + .dio > .dio__glow {
+:is(.dio:not(.dio--light, .dpress--ticker, .hv2--bleed) + .dio:not(.dio--light, .dio--blend, .dpress--ticker, .hv2--bleed), .dio:not(.dio--light, .dio--blend, .dpress--ticker, .hv2--bleed):has(+ .dio:not(.dio--light, .dpress--ticker, .hv2--bleed)))
+  > :is(.dio__bed, .dio__grade, .dio__seam, .dio__darkbed, .hv2-ground, .hv2-bloom, .hv2-vignette, .hv2-grain) {
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 var(--fade-t), #000 calc(100% - var(--fade-b)), transparent);
+          mask-image: linear-gradient(180deg, transparent, #000 var(--fade-t), #000 calc(100% - var(--fade-b)), transparent);
+}
+.dio:not(.dio--light, .dpress--ticker, .hv2--bleed) + .dio:not(.dio--light, .dio--blend, .dpress--ticker, .hv2--bleed) > .dio__glow {
   --glow-edge: calc(var(--glow-top, -8%) * -100 / 70);
-  -webkit-mask-image: linear-gradient(180deg, transparent var(--glow-edge), var(--bg) calc(var(--glow-edge) + var(--join)));
-          mask-image: linear-gradient(180deg, transparent var(--glow-edge), var(--bg) calc(var(--glow-edge) + var(--join)));
-}
-/* Home, "Impact from Google" into "Our guarantee" (user, 16 October 2026: "make this transition look seamless"):
-   the same join, mirrored at this section's foot. "Our guarantee" is see-through (dio--blend), so this section now
-   ends see-through too: its ground fades out over its last --join, and so do its photo, grade and seam (a second
-   mask layer, intersected with the fade-in above, so nothing changes above the last --join; the seam is only the
-   lower 26%, and both layers are measured in its own box, whose bottom is the section's). Both sides of the line
-   then show the same page background at any scroll position. The glow box ends 8% above the foot: not masked. */
-.dpf + .dimp:has(+ .ddiff.dio--blend) {
-  background: linear-gradient(180deg, transparent, var(--join-bg) var(--join), var(--join-bg) calc(100% - var(--join)), transparent);
-}
-.dpf + .dimp:has(+ .ddiff.dio--blend) > :is(.dio__bed, .dio__grade, .dio__seam) {
-  -webkit-mask-image: linear-gradient(180deg, transparent, var(--bg) var(--join)),
-                      linear-gradient(180deg, var(--bg) calc(100% - var(--join)), transparent);
-  -webkit-mask-composite: source-in;
-          mask-image: linear-gradient(180deg, transparent, var(--bg) var(--join)),
-                      linear-gradient(180deg, var(--bg) calc(100% - var(--join)), transparent);
-          mask-composite: intersect;
+  -webkit-mask-image: linear-gradient(180deg, transparent var(--glow-edge), #000 calc(var(--glow-edge) + var(--fade-t)));
+          mask-image: linear-gradient(180deg, transparent var(--glow-edge), #000 calc(var(--glow-edge) + var(--fade-t)));
 }
 .dpf__head { text-align: center; max-width: 680px; margin: 0 auto clamp(34px, 4.6vw, 52px); }
 .dpf__head .eyebrow { justify-content: center; margin-bottom: 16px; }
@@ -1241,7 +1267,6 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
   .ddiff__emblem { grid-template-columns: 1fr; justify-items: center; text-align: center; gap: 16px; }
   .ddiff__sign { justify-items: center; }
 
-  .df__q { padding: 18px 16px; }
 
   .bw__frames { grid-template-columns: repeat(2, 1fr); }
   .bw__hero   { grid-template-columns: 1fr; }
@@ -1980,6 +2005,9 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 .dkpi--a-split .s-head .eyebrow { margin-bottom: 18px; line-height: 1.45; }
 .dkpi--a-split .s-head h2 { margin-bottom: 18px; }
 .dkpi--a-split .s-head p { margin: 0; max-width: 46ch; color: color-mix(in srgb, var(--ink-2) 82%, var(--ink)); }
+/* Industries hub: its link-out note lives in the heading block, so it sits under the intro and travels with it. */
+.dkpi--a-split .s-head p.rv__note { margin-top: clamp(16px, 1.8vw, 22px); text-align: left; font: 400 .84rem/1.5 var(--body); }
+.dkpi--a-split .s-head p.rv__note a { white-space: nowrap; }
 
 .dkpi--a-split .dkpi__grid { grid-template-columns: minmax(0, 1fr); gap: clamp(14px, 1.6vw, 20px); }
 
@@ -2120,6 +2148,54 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
   .dkpi--a-split .s-head .eyebrow::before { display: none; }
 }
 
+/* The 2-KPI Method, "Two numbers stand between a search and a booked patient": the same editorial split in teal
+   (user, 16 October 2026: option A of three, "turn it into a teal version"). It is a dark section, so every token
+   above resolves to the dark set; only what was tuned for the light surface changes. The ground runs from the
+   hero's foot (--bg-3) into --bg over --join, so that edge is not a line; it ends solid on the white section after
+   it, a straight edge like the site's other dark-to-light joins. The hexagon pattern is drawn as on the dark sections (no darkening
+   filter, --hex-a), and the light veil behind the heading is not needed. Each card closes with a note line. */
+.dio.dkpi--a-teal { --join: clamp(110px, 12vw, 180px);
+  padding-block: clamp(72px, 8.5vw, 120px) clamp(64px, 8vw, 110px);
+  background: linear-gradient(180deg, var(--bg-3), var(--bg) var(--join)); }
+.dio.dkpi--a-teal::before { filter: none; opacity: var(--hex-a);
+  -webkit-mask-image: linear-gradient(180deg, transparent 40px, var(--bg) 160px),
+                      radial-gradient(120% 115% at 50% 20%, var(--bg) 0%, var(--bg) 30%, transparent 78%);
+          mask-image: linear-gradient(180deg, transparent 40px, var(--bg) 160px),
+                      radial-gradient(120% 115% at 50% 20%, var(--bg) 0%, var(--bg) 30%, transparent 78%); }
+.dkpi--a-teal .s-head::after { content: none; }
+.dkpi--a-teal .dkpi__card { grid-template-areas: "tag motif" "abbr motif" "text text" "note note"; }
+.dkpi--a-teal .dkpi__card > p.dkpi__note { grid-area: note; margin: 10px 0 0; padding-top: 0; border-top: 0;
+  font: 600 .86rem/1.45 var(--body); color: var(--ink); }
+@media (max-width: 599px) {
+  .dkpi--a-teal .dkpi__card { grid-template-areas: "tag tag" "abbr motif" "text text" "note note"; }
+}
+/* The 8 industry pages' and the Industries hub's "two numbers" sections take the editorial split too (user, 16 October
+   2026: "apply the same design" to the similar sections): same FCP and SoLV cards and motifs as Home; each card keeps
+   its closing lever line (a figure and its source) as a last row, under its own hairline. */
+.dkpi--a-split .dkpi__card:has(> .dkpi__lever) { grid-template-areas: "tag motif" "abbr motif" "text text" "note note"; }
+.dkpi--a-split .dkpi__card > .dkpi__lever { grid-area: note; margin-top: clamp(14px, 1.6vw, 18px); }
+@media (max-width: 599px) {
+  .dkpi--a-split .dkpi__card:has(> .dkpi__lever) { grid-template-areas: "tag tag" "abbr motif" "text text" "note note"; }
+}
+
+/* The 2-KPI Method, "One Local Radius Scan, three measures" (user, 16 October 2026: option A of three): the same
+   editorial split on the light surface with three measures and no motifs, each card closing with its "better" line.
+   Every editorial split (here, Home's "Two numbers decide the click" and The 2-KPI Method's teal "Two numbers"; user,
+   16 October 2026: "apply it here as well and to other pages where applicable"): from 1024px, where the split has two
+   columns, the heading block "should move along when user scrolls until only to end of the section": it sticks below
+   the fixed header while the cards scroll past and is let go where the split ends (its containing block), so it never
+   leaves the section. Where the heading block is as tall as the cards, there is nothing to travel and it stays put.
+   Sticky works here because no ancestor is a scroll container (.dio clips with overflow: clip). */
+.dkpi--m3 .dkpi__card { grid-template-areas: "tag tag" "abbr abbr" "text text" "note note"; padding-block: clamp(16px, 1.8vw, 22px); }
+.dkpi--m3 .dkpi__abbr { font-size: clamp(2rem, 3.2vw, 2.7rem); }
+.dkpi--m3 .dkpi__card > p:not(.dkpi__note) { margin-top: 12px; padding-top: 12px; }
+.dkpi--m3 .dkpi__card > p.dkpi__note { grid-area: note; margin: 8px 0 0; padding-top: 0; border-top: 0;
+  font: 600 .86rem/1.45 var(--body); color: var(--ink); }
+.dkpi--m3 .dkpi__card > p.dkpi__note b { color: var(--accent); }
+@media (min-width: 1024px) {
+  .dkpi--a-split .dkpi__split > .s-head { position: sticky; top: clamp(96px, 11vh, 120px); }
+}
+
 /* Home "What a patient sees after the tap": option B, versus split (owner, 9 October 2026). */
 /* Option B, "Versus split" (.dfcp--b-versus): Home, "What a patient sees after the tap" (KPI 01, FCP).
    One split frame instead of two cards: the competitor half is tinted warm (the danger signal colour),
@@ -2141,6 +2217,9 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 /* ---- section frame --------------------------------------------------------------------------------------- */
 /* Shorter padding than the base .dfcp (128px a side at 1440) so the whole section fits one 900px screen. */
 .dio.dfcp.dfcp--b-versus { padding-block: clamp(48px, 4.6vw, 66px); }
+/* The teal versus (The 2-KPI Method, user, 16 October 2026: "looks too tight") is one section among others there, not
+   a one-screen block: it takes the same padding as the sections around it. */
+.dio.dfcp.dfcp--b-versus.dio--dark { padding-block: var(--pad); }
 
 /* ---- heading block: stacked below 900px, two columns from 900px ------------------------------------------- */
 .dfcp--b-versus .s-head { max-width: none; margin-bottom: clamp(24px, 2.8vw, 36px); }
@@ -2281,8 +2360,8 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
    white --bg-3). The dark bed and the glow are left out of this section's markup (they are drawn for dark
    grounds). On Home the section above carries the hexagon pattern, so this one continues it (same drawing, filter
    and strength), fading in below the top edge so it does not restart at the join, with a veil in --bg that keeps
-   its lines out from behind the heading block. The industry pages' section above has no pattern, so theirs has
-   none either. */
+   its lines out from behind the heading block. Since 16 October 2026 the industry pages' section above is the same
+   editorial split, so theirs continues it too. */
 .dkpi--a-split + .dio.dfcp--b-versus.surface-light::before {
   content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: var(--hex-a-light, .16);
   background: url(../img/hex-connections.webp) var(--hex-pos) / var(--hex-size) auto repeat-y;

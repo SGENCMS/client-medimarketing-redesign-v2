@@ -176,43 +176,63 @@
 
   </section>
 
-  <section class="dio dkpi dio--light surface-light">
-    <div class="flow-seam flow-seam--top" aria-hidden="true">
-      <div class="flow-wave">
-        <svg viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0,90 L0,46 C240,2 480,2 720,30 C960,58 1200,86 1440,40 L1440,90 Z"/></svg>
-      </div>
-      <div class="flow-fade" style="--flow-from: transparent; --flow-to: var(--bg);"></div>
-    </div>
-
+  <section class="dio dkpi dkpi--a-split dkpi--a-teal dio--dark">
     <div class="container">
-      <div class="s-head center reveal">
-        <span class="eyebrow">The two numbers</span>
-        <h2>Two numbers stand between a search <span class="grad">and a booked patient.</span></h2>
-        <p>Before a patient can book, two things have to happen. They have to find your practice in Google's local results, and the page they tap has to show up. SoLV measures the first, FCP measures the second, and a slow first paint holds back every other form of digital marketing you pay for.</p>
-      </div>
+      <div class="dkpi__split">
+        <div class="s-head reveal">
+          <span class="eyebrow">The two numbers</span>
+          <h2>Two numbers stand between a search <span class="grad">and a booked patient.</span></h2>
+          <p>Before a patient can book, two things have to happen. They have to find your practice in Google's local results, and the page they tap has to show up. SoLV measures the first, FCP measures the second, and a slow first paint holds back every other form of digital marketing you pay for.</p>
+        </div>
 
-      <div class="dkpi__grid">
-        <article class="dkpi__card glass reveal">
-          <span class="dkpi__tag">KPI 1 &middot; The page</span>
-          <h3 class="dkpi__abbr">FCP<span class="full">First Contentful Paint</span></h3>
-          <p>The time between a tap on your link and the moment the browser shows the first text or image of your page.</p>
-          <div class="dkpi__lever">Why it counts: it is the first reason a visitor leaves a website.</div>
-        </article>
-        <article class="dkpi__card glass reveal" data-d="1">
-          <span class="dkpi__tag">KPI 2 &middot; The map</span>
-          <h3 class="dkpi__abbr">SoLV<span class="full">Share of Local Visibility</span></h3>
-          <p>How often your Google Business listing is found in the top 3 of Google's local results, measured across the area you serve.</p>
-          <div class="dkpi__lever">How it is scored: the share of scan pins where your listing holds a top-3 spot.</div>
-        </article>
+        <div class="dkpi__grid">
+          <article class="dkpi__card glass reveal">
+            <svg class="dkpi__motif dkpi__motif--sweep" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+              <defs>
+                <linearGradient id="dkpiA-sweep" gradientUnits="userSpaceOnUse" x1="92" y1="14" x2="24" y2="98">
+                  <stop offset="0" class="m-stop m-stop--a"/>
+                  <stop offset="1" class="m-stop m-stop--b"/>
+                </linearGradient>
+              </defs>
+              <circle class="m-orbit" cx="60" cy="60" r="56"/>
+              <path class="m-track" d="M60 16 A44 44 0 1 1 21.895 82"/>
+              <path class="m-sweep" d="M60 16 A44 44 0 1 1 21.895 82"/>
+              <g class="m-head"><circle class="m-head__halo" cx="21.895" cy="82" r="9"/><circle class="m-head__dot" cx="21.895" cy="82" r="4.5"/></g>
+              <g class="m-page">
+                <rect class="m-page__sheet" x="46" y="43" width="28" height="34" rx="5"/>
+                <rect class="m-page__bar m-page__bar--1" x="51.5" y="50" width="17" height="4.5" rx="2.25"/>
+                <rect class="m-page__bar m-page__bar--2" x="51.5" y="58.5" width="12" height="3" rx="1.5"/>
+                <rect class="m-page__bar m-page__bar--3" x="51.5" y="65" width="15" height="3" rx="1.5"/>
+              </g>
+            </svg>
+            <span class="dkpi__tag">KPI 1 &middot; The page</span>
+            <h3 class="dkpi__abbr">FCP<span class="full">First Contentful Paint</span></h3>
+            <p>The time between a tap on your link and the moment the browser shows the first text or image of your page.</p>
+            <p class="dkpi__note">Why it counts: it is the first reason a visitor leaves a website.</p>
+          </article>
+          <article class="dkpi__card glass reveal" data-d="1">
+            <svg class="dkpi__motif dkpi__motif--rings" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+              <circle class="m-ring m-ring--4" cx="60" cy="60" r="56"/>
+              <circle class="m-ring m-ring--3" cx="60" cy="60" r="44"/>
+              <circle class="m-ring m-ring--2" cx="60" cy="60" r="32"/>
+              <path class="m-radius" d="M60 60 L98.1 38"/>
+              <circle class="m-radius__end" cx="98.1" cy="38" r="3"/>
+              <circle class="m-core__fill" cx="60" cy="60" r="20"/>
+              <circle class="m-core" cx="60" cy="60" r="20"/>
+              <circle class="m-pin__halo" cx="60" cy="60" r="7.5"/>
+              <circle class="m-pin" cx="60" cy="60" r="4.5"/>
+            </svg>
+            <span class="dkpi__tag">KPI 2 &middot; The map</span>
+            <h3 class="dkpi__abbr">SoLV<span class="full">Share of Local Visibility</span></h3>
+            <p>How often your Google Business listing is found in the top 3 of Google's local results, measured across the area you serve.</p>
+            <p class="dkpi__note">How it is scored: the share of scan pins where your listing holds a top-3 spot.</p>
+          </article>
+        </div>
       </div>
-    </div>
-
-    <div class="flow-seam flow-seam--bottom" aria-hidden="true">
-      <div class="flow-fade" style="--flow-from: var(--bg); --flow-to: transparent;"></div>
     </div>
   </section>
 
-  <section class="dio dkpi dio--dark dio--blend">
+  <section class="dio dkpi dio--light dio--light-flat surface-light">
     <div class="container">
       <div class="s-head reveal">
         <span class="eyebrow">KPI 1 &middot; First Contentful Paint</span>
@@ -241,9 +261,10 @@
         </article>
       </div>
     </div>
+    <div class="container dio__rule dio__rule--bottom" aria-hidden="true"></div>
   </section>
 
-  <section class="dio dfcp dio--dark dio--blend">
+  <section class="dio dfcp dio--light dio--light-flat surface-light">
     <div class="container">
       <div class="s-head reveal">
         <span class="eyebrow">FCP = bounce rate</span>
@@ -272,7 +293,7 @@
     </div>
   </section>
 
-  <section class="dio dfcp dio--dark">
+  <section class="dio dfcp dfcp--b-versus dio--dark">
     <div class="dio__darkbed" aria-hidden="true"></div>
     <div class="dio__glow" aria-hidden="true"></div>
 
@@ -283,8 +304,8 @@
         <p>Google publishes marks for First Contentful Paint: 1.8 seconds or less is good, and more than 3.0 seconds is poor. We check FCP with Google PageSpeed Insights before we touch a site and again after. The sites we build on SGEN CMS, our own platform, paint in 0.9 seconds on desktop.</p>
       </div>
 
-      <div class="dfcp__grid">
-        <article class="dfcp__card glass reveal" data-fcp data-ndl="-66">
+      <div class="dfcp__grid dfcp__versus">
+        <article class="dfcp__card dfcp__half dfcp__half--bad reveal" data-fcp data-ndl="-66">
           <div class="dfcp__card-head">
             <span class="dfcp__who">A slow competitor site we measured</span>
             <span class="dfcp__flag bad">Poor</span>
@@ -293,7 +314,7 @@
           <div class="dfcp__gauge">
             <svg viewBox="0 0 200 120" role="img" aria-label="First Contentful Paint of 7.8 seconds, flagged slow">
               <path class="track" d="M20,100 A80,80 0 0 1 180,100" fill="none" stroke-width="14" stroke-linecap="round"/>
-              <path class="fill-bad" d="M20,100 A80,80 0 0 1 33,61" fill="none" stroke-width="14" stroke-linecap="round"/>
+              <path class="fill-bad" d="M20,100 A80,80 0 0 1 33,61" fill="none" stroke-width="14" stroke-linecap="round" pathLength="1"/>
               <g class="ticks" stroke-width="2">
                 <line x1="20" y1="100" x2="30" y2="100"/><line x1="100" y1="20" x2="100" y2="30"/><line x1="180" y1="100" x2="170" y2="100"/>
               </g>
@@ -307,7 +328,9 @@
           </div>
         </article>
 
-        <article class="dfcp__card glass reveal" data-fcp data-ndl="72" data-d="1">
+        <span class="dfcp__vs reveal" aria-hidden="true"></span>
+
+        <article class="dfcp__card dfcp__half dfcp__half--good reveal" data-fcp data-ndl="72" data-d="1">
           <div class="dfcp__card-head">
             <span class="dfcp__who">A site we build on SGEN CMS</span>
             <span class="dfcp__flag good">Good</span>
@@ -316,7 +339,7 @@
           <div class="dfcp__gauge">
             <svg viewBox="0 0 200 120" role="img" aria-label="First Contentful Paint of 0.9 seconds, fast">
               <path class="track" d="M20,100 A80,80 0 0 1 180,100" fill="none" stroke-width="14" stroke-linecap="round"/>
-              <path class="fill-good" d="M20,100 A80,80 0 0 1 171,64" fill="none" stroke-width="14" stroke-linecap="round"/>
+              <path class="fill-good" d="M20,100 A80,80 0 0 1 171,64" fill="none" stroke-width="14" stroke-linecap="round" pathLength="1"/>
               <g class="ticks" stroke-width="2">
                 <line x1="20" y1="100" x2="30" y2="100"/><line x1="100" y1="20" x2="100" y2="30"/><line x1="180" y1="100" x2="170" y2="100"/>
               </g>
@@ -338,9 +361,11 @@
         </div>
       </div>
     </div>
+    <div class="dio__rule dio__rule--top" aria-hidden="true"></div>
+    <div class="dio__rule dio__rule--bottom" aria-hidden="true"></div>
   </section>
 
-  <section class="dio dkpi dio--light surface-light">
+  <section class="dio dkpi dkpi--a-split dkpi--m3 dio--light surface-light">
     <div class="flow-seam flow-seam--top" aria-hidden="true">
       <div class="flow-wave">
         <svg viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0,90 L0,40 C220,84 460,86 720,52 C980,18 1200,4 1440,46 L1440,90 Z"/></svg>
@@ -349,31 +374,33 @@
     </div>
 
     <div class="container">
-      <div class="s-head center reveal">
-        <span class="eyebrow">KPI 2 &middot; Share of Local Visibility</span>
-        <h2>One Local Radius Scan, <span class="grad">three measures.</span></h2>
-        <p>SoLV is how often your Google Business listing is found in the top 3 on Google. A Local Radius Scan shows how your location is represented to Google searchers depending on where they search from. It sets a grid of pins over your area, runs the selected key phrase from each pin and records the rank your listing holds there.</p>
-      </div>
+      <div class="dkpi__split">
+        <div class="s-head reveal">
+          <span class="eyebrow">KPI 2 &middot; Share of Local Visibility</span>
+          <h2>One Local Radius Scan, <span class="grad">three measures.</span></h2>
+          <p>SoLV is how often your Google Business listing is found in the top 3 on Google. A Local Radius Scan shows how your location is represented to Google searchers depending on where they search from. It sets a grid of pins over your area, runs the selected key phrase from each pin and records the rank your listing holds there.</p>
+        </div>
 
-      <div class="dkpi__grid dkpi__grid--3">
-        <article class="dkpi__card glass reveal">
-          <span class="dkpi__tag">Measure 01</span>
-          <h3 class="dkpi__abbr">SoLV<span class="full">Share of Local Visibility</span></h3>
-          <p>The percentage of the scan's pins where your listing is in the top 3 for the selected key phrase.</p>
-          <div class="dkpi__lever">The main number. <b>Higher is better.</b></div>
-        </article>
-        <article class="dkpi__card glass reveal" data-d="1">
-          <span class="dkpi__tag">Measure 02</span>
-          <h3 class="dkpi__abbr">ARP<span class="full">Average Rank Position</span></h3>
-          <p>The average rank across the pins that show anything other than 20+. It tells you how high you sit at the pins where the scan finds you inside the top 20.</p>
-          <div class="dkpi__lever">Rank 1 is the top spot. <b>Lower is better.</b></div>
-        </article>
-        <article class="dkpi__card glass reveal" data-d="2">
-          <span class="dkpi__tag">Measure 03</span>
-          <h3 class="dkpi__abbr">ATRP<span class="full">Average Total Rank Position</span></h3>
-          <p>The average across every pin on the scan, the 20+ pins included. It shows how you rank across the whole area.</p>
-          <div class="dkpi__lever">Counts every pin. <b>Lower is better.</b></div>
-        </article>
+        <div class="dkpi__grid">
+          <article class="dkpi__card glass reveal">
+            <span class="dkpi__tag">Measure 01</span>
+            <h3 class="dkpi__abbr">SoLV<span class="full">Share of Local Visibility</span></h3>
+            <p>The percentage of the scan's pins where your listing is in the top 3 for the selected key phrase.</p>
+            <p class="dkpi__note">The main number. <b>Higher is better.</b></p>
+          </article>
+          <article class="dkpi__card glass reveal" data-d="1">
+            <span class="dkpi__tag">Measure 02</span>
+            <h3 class="dkpi__abbr">ARP<span class="full">Average Rank Position</span></h3>
+            <p>The average rank across the pins that show anything other than 20+. It tells you how high you sit at the pins where the scan finds you inside the top 20.</p>
+            <p class="dkpi__note">Rank 1 is the top spot. <b>Lower is better.</b></p>
+          </article>
+          <article class="dkpi__card glass reveal" data-d="2">
+            <span class="dkpi__tag">Measure 03</span>
+            <h3 class="dkpi__abbr">ATRP<span class="full">Average Total Rank Position</span></h3>
+            <p>The average across every pin on the scan, the 20+ pins included. It shows how you rank across the whole area.</p>
+            <p class="dkpi__note">Counts every pin. <b>Lower is better.</b></p>
+          </article>
+        </div>
       </div>
     </div>
 

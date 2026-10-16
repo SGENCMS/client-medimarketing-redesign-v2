@@ -271,7 +271,7 @@
     </div>
   </section>
 
-  <section class="dio dkpi dio--light surface-light persona-pillars">
+  <section class="dio dkpi dkpi--a-split dio--light surface-light persona-pillars">
     <div class="flow-seam flow-seam--top" aria-hidden="true">
       <div class="flow-wave">
         <svg viewBox="0 0 1440 90" preserveAspectRatio="none" aria-hidden="true"><path d="M0,90 L0,46 C240,2 480,2 720,30 C960,58 1200,86 1440,40 L1440,90 Z"/></svg>
@@ -280,25 +280,56 @@
     </div>
 
     <div class="container">
-      <div class="s-head center reveal">
-        <span class="eyebrow">The 2 KPIs that rule them all</span>
-        <h2>For a pain clinic, growth comes down to <span class="grad">two numbers.</span></h2>
-        <p>Impressions and vanity clicks do not fill a treatment schedule. What decides whether a patient seeking relief finds your clinic, and stays long enough to book, is how fast your page paints and how much of your local map you hold. We work on both, every month.</p>
-      </div>
+      <div class="dkpi__split">
+        <div class="s-head reveal">
+          <span class="eyebrow">The 2 KPIs that rule them all</span>
+          <h2>For a pain clinic, growth comes down to <span class="grad">two numbers.</span></h2>
+          <p>Impressions and vanity clicks do not fill a treatment schedule. What decides whether a patient seeking relief finds your clinic, and stays long enough to book, is how fast your page paints and how much of your local map you hold. We work on both, every month.</p>
+        </div>
 
-      <div class="dkpi__grid">
-        <article class="dkpi__card glass reveal">
-          <span class="dkpi__tag">KPI 01 &middot; Speed</span>
-          <h3 class="dkpi__abbr">FCP<span class="full">First Contentful Paint</span></h3>
-          <p>The gap between a tap on your listing and the first thing a patient in pain can read. 85% of traffic globally is from a mobile device, and a patient seeking relief will not sit on a blank screen. They go back and pick another clinic.</p>
-          <div class="dkpi__lever">What turns a symptom search into a booked appointment: pages on SGEN CMS that paint in <b><span class="dkpi__num">0.9s</span></b> on desktop. A slow competitor site we measured took <b>7.8s</b>.</div>
-        </article>
-        <article class="dkpi__card glass reveal" data-d="1">
-          <span class="dkpi__tag">KPI 02 &middot; Visibility</span>
-          <h3 class="dkpi__abbr">SoLV<span class="full">Share of Local Visibility</span></h3>
-          <p>How often your clinic lands in the Google local top-3, everywhere in your service radius, when someone types "pain management near me," "sciatica treatment near me," or "chronic back pain relief." It tells you how much of the local map your clinic holds.</p>
-          <div class="dkpi__lever">The gap between a booked first visit and silence: position 1 in the local pack earns <b><span class="dkpi__num">18%</span></b> of clicks, and a clinic outside the top-3 gets <b>under 1%.</b></div>
-        </article>
+        <div class="dkpi__grid">
+          <article class="dkpi__card glass reveal">
+            <svg class="dkpi__motif dkpi__motif--sweep" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+              <defs>
+                <linearGradient id="dkpiA-sweep" gradientUnits="userSpaceOnUse" x1="92" y1="14" x2="24" y2="98">
+                  <stop offset="0" class="m-stop m-stop--a"/>
+                  <stop offset="1" class="m-stop m-stop--b"/>
+                </linearGradient>
+              </defs>
+              <circle class="m-orbit" cx="60" cy="60" r="56"/>
+              <path class="m-track" d="M60 16 A44 44 0 1 1 21.895 82"/>
+              <path class="m-sweep" d="M60 16 A44 44 0 1 1 21.895 82"/>
+              <g class="m-head"><circle class="m-head__halo" cx="21.895" cy="82" r="9"/><circle class="m-head__dot" cx="21.895" cy="82" r="4.5"/></g>
+              <g class="m-page">
+                <rect class="m-page__sheet" x="46" y="43" width="28" height="34" rx="5"/>
+                <rect class="m-page__bar m-page__bar--1" x="51.5" y="50" width="17" height="4.5" rx="2.25"/>
+                <rect class="m-page__bar m-page__bar--2" x="51.5" y="58.5" width="12" height="3" rx="1.5"/>
+                <rect class="m-page__bar m-page__bar--3" x="51.5" y="65" width="15" height="3" rx="1.5"/>
+              </g>
+            </svg>
+            <span class="dkpi__tag">KPI 01 &middot; Speed</span>
+            <h3 class="dkpi__abbr">FCP<span class="full">First Contentful Paint</span></h3>
+            <p>The gap between a tap on your listing and the first thing a patient in pain can read. 85% of traffic globally is from a mobile device, and a patient seeking relief will not sit on a blank screen. They go back and pick another clinic.</p>
+            <div class="dkpi__lever">What turns a symptom search into a booked appointment: pages on SGEN CMS that paint in <b><span class="dkpi__num">0.9s</span></b> on desktop. A slow competitor site we measured took <b>7.8s</b>.</div>
+          </article>
+          <article class="dkpi__card glass reveal" data-d="1">
+            <svg class="dkpi__motif dkpi__motif--rings" viewBox="0 0 120 120" aria-hidden="true" focusable="false">
+              <circle class="m-ring m-ring--4" cx="60" cy="60" r="56"/>
+              <circle class="m-ring m-ring--3" cx="60" cy="60" r="44"/>
+              <circle class="m-ring m-ring--2" cx="60" cy="60" r="32"/>
+              <path class="m-radius" d="M60 60 L98.1 38"/>
+              <circle class="m-radius__end" cx="98.1" cy="38" r="3"/>
+              <circle class="m-core__fill" cx="60" cy="60" r="20"/>
+              <circle class="m-core" cx="60" cy="60" r="20"/>
+              <circle class="m-pin__halo" cx="60" cy="60" r="7.5"/>
+              <circle class="m-pin" cx="60" cy="60" r="4.5"/>
+            </svg>
+            <span class="dkpi__tag">KPI 02 &middot; Visibility</span>
+            <h3 class="dkpi__abbr">SoLV<span class="full">Share of Local Visibility</span></h3>
+            <p>How often your clinic lands in the Google local top-3, everywhere in your service radius, when someone types "pain management near me," "sciatica treatment near me," or "chronic back pain relief." It tells you how much of the local map your clinic holds.</p>
+            <div class="dkpi__lever">The gap between a booked first visit and silence: position 1 in the local pack earns <b><span class="dkpi__num">18%</span></b> of clicks, and a clinic outside the top-3 gets <b>under 1%.</b></div>
+          </article>
+        </div>
       </div>
     </div>
 
