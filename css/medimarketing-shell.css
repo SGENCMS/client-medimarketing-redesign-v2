@@ -49,6 +49,28 @@
   background: linear-gradient(180deg, transparent, var(--bg-3));
 }
 
+/* Thin rules with round ends (user, 16 October 2026, drawn from their reference), on Home: between "How we scan
+   your radius" and "What we do", and along the top and bottom edges of the final call to action. (One between
+   "Impact from Google" and "Our guarantee" was taken out again: that join is seamless now, user.) A rule is taken
+   out of the flow, so nothing moves, and sits above the section's layers. It runs edge to edge (the final call to
+   action's two, user: "go from edge to edge"), or, as a .container, exactly as wide as the content column at every
+   width (the one between sections). --gap: the section
+   ends with a .rv__note, which keeps the browser's 1em bottom margin (.84rem), and the next section has the same
+   padding, so the middle of the gap is half of that above this section's lower edge. --top / --bottom: on the
+   section's edge (inside it: sections clip). Colour: --glow and --accent-2 mixed, fading to 18% at the right, as
+   measured on the reference. The .container form needs the longer selector to beat `.dx .container` and the like. */
+.dio > .dio__rule,
+.dio > .container.dio__rule { position: absolute; left: 0; right: 0; z-index: 3; pointer-events: none; }
+.dio > .container.dio__rule { max-width: var(--maxw); }
+.dio > .dio__rule--gap    { bottom: calc((.84rem - 2px) / 2); }
+.dio > .dio__rule--top    { top: 0; }
+.dio > .dio__rule--bottom { bottom: 0; }
+.dio__rule::before {
+  content: ""; display: block; height: 2px; border-radius: 999px;
+  --rule: color-mix(in srgb, var(--glow) 50%, var(--accent-2));
+  background: linear-gradient(90deg, var(--rule), color-mix(in srgb, var(--rule) 18%, transparent));
+}
+
 .dio--dark { background: var(--bg); }
 .dio__darkbed {
   position: absolute; inset: 0; z-index: -3; pointer-events: none; overflow: hidden;
@@ -1048,6 +1070,23 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
   -webkit-mask-image: linear-gradient(180deg, transparent var(--glow-edge), var(--bg) calc(var(--glow-edge) + var(--join)));
           mask-image: linear-gradient(180deg, transparent var(--glow-edge), var(--bg) calc(var(--glow-edge) + var(--join)));
 }
+/* Home, "Impact from Google" into "Our guarantee" (user, 16 October 2026: "make this transition look seamless"):
+   the same join, mirrored at this section's foot. "Our guarantee" is see-through (dio--blend), so this section now
+   ends see-through too: its ground fades out over its last --join, and so do its photo, grade and seam (a second
+   mask layer, intersected with the fade-in above, so nothing changes above the last --join; the seam is only the
+   lower 26%, and both layers are measured in its own box, whose bottom is the section's). Both sides of the line
+   then show the same page background at any scroll position. The glow box ends 8% above the foot: not masked. */
+.dpf + .dimp:has(+ .ddiff.dio--blend) {
+  background: linear-gradient(180deg, transparent, var(--join-bg) var(--join), var(--join-bg) calc(100% - var(--join)), transparent);
+}
+.dpf + .dimp:has(+ .ddiff.dio--blend) > :is(.dio__bed, .dio__grade, .dio__seam) {
+  -webkit-mask-image: linear-gradient(180deg, transparent, var(--bg) var(--join)),
+                      linear-gradient(180deg, var(--bg) calc(100% - var(--join)), transparent);
+  -webkit-mask-composite: source-in;
+          mask-image: linear-gradient(180deg, transparent, var(--bg) var(--join)),
+                      linear-gradient(180deg, var(--bg) calc(100% - var(--join)), transparent);
+          mask-composite: intersect;
+}
 .dpf__head { text-align: center; max-width: 680px; margin: 0 auto clamp(34px, 4.6vw, 52px); }
 .dpf__head .eyebrow { justify-content: center; margin-bottom: 16px; }
 .dpf__head h2 { font: 800 var(--fs-h2)/1.05 var(--font); letter-spacing: -.02em; color: var(--ink); margin: 0 0 14px; }
@@ -1764,6 +1803,83 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 .hv2--photo.hp-physical-therapy { --hp-xn: 0.95; --hp-y: 50%; --hp-bxn: 0.95; --hp-by: 15%; --hp-more: 32px; --hp-more-s: 32px; --hp-bright: 1; --hp-shade-img: url(../img/hero-physical-therapy-shade.webp); }
 .hv2--photo.hp-urgent-care { --hp-xn: 1; --hp-y: 50%; --hp-bxn: 1; --hp-by: 50%; --hp-h1k: 0.94; --hp-bright: 1; --hp-shade-img: url(../img/hero-urgent-care-shade.webp); }
 .hv2--photo.hp-vet-clinic { --hp-xn: 0.68; --hp-y: 50%; --hp-bxn: 0.68; --hp-by: 15%; --hp-bright: 1; --hp-shade-img: url(../img/hero-vet-clinic-shade.webp); }
+
+/* Full-bleed photo hero: The 2-KPI Method (the user's pick, option D of four, 16 October 2026), then Home and the
+   eight industry pages ("apply them same way"). The photograph covers the hero and a scrim darkens it towards the
+   copy, which sits low on the left. It keeps the typographic hero's type, buttons, trust line and rise-in, with its
+   own layers in place of the ground, bloom and vignette. The scrim ends in --bg-3 at the foot, as the typographic
+   hero's ground does (the light section below meets it on a straight edge, as before). Per page: --hb-pos, the
+   photo's focal point, and --hb-bright. Portrait screens and Home on desktop draw the photo whole instead: below.
+   The img `sizes` follow: 100vw on portrait screens, else 100vw when the hero is wider than the photo, else its
+   height x the photo's ratio (151vh for 3:2). */
+.hv2--bleed.hv2-typographic.dh { text-align: left; align-items: flex-end; padding-bottom: clamp(56px, 10vh, 120px); }
+.hv2--bleed.hv2-typographic .container { max-width: var(--maxw); }
+.hv2--bleed .hv2-inner { align-items: flex-start; margin: 0; max-width: 760px; }
+.hv2--bleed.hv2-typographic .dio-crumb,
+.hv2--bleed.hv2-typographic .hv2-actions { justify-content: flex-start; }
+.hv2--bleed.hv2-typographic h1 { font-size: clamp(2.4rem, min(6vw, 9vh), 5.4rem); }
+/* Over the photo the supporting line takes --ink. */
+.hv2--bleed.hv2-typographic .hv2-sub { color: var(--ink); }
+.hv2-bleed__photo { position: absolute; inset: 0; z-index: -3; overflow: hidden; }
+.hv2-bleed__photo img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--hb-pos, 50% 50%);
+  filter: saturate(.9) brightness(var(--hb-bright, .82)); }
+.hv2-bleed__scrim { position: absolute; inset: 0; z-index: -2; pointer-events: none; background:
+  linear-gradient(90deg, color-mix(in srgb, var(--bg-3) 92%, transparent) 0%, color-mix(in srgb, var(--bg-3) 70%, transparent) 38%, transparent 72%),
+  linear-gradient(0deg, var(--bg-3) 0%, color-mix(in srgb, var(--bg-3) 55%, transparent) 30%, transparent 60%),
+  linear-gradient(180deg, color-mix(in srgb, var(--bg-3) 70%, transparent) 0%, transparent 22%); }
+
+/* Portrait screens, phones and upright tablets (user, 16 October 2026: the phone views were "too zoomed in", "utilize
+   the space above the texts to show the whole image", any gap covered by a gradient of a matching colour): the
+   whole photograph, full width, from the top of the hero (under the transparent header), fading out over its lower
+   half into the hero's ground, here --bg-3; the copy keeps its place at the foot. Where a short screen brings the
+   copy up into the photo, it sits on the faded part. */
+@media (max-width: 980px) and (max-aspect-ratio: 1/1) {
+  .hv2--bleed.hv2-typographic.dh { background: var(--bg-3); }
+  .hv2-bleed__photo { bottom: auto; }
+  .hv2-bleed__photo img { height: auto; min-height: var(--hb-ph, 0px); object-fit: cover; object-position: var(--hb-pos-p, var(--hb-pos, 50% 50%));
+    -webkit-mask-image: linear-gradient(180deg, var(--bg) 50%, transparent 100%);
+            mask-image: linear-gradient(180deg, var(--bg) 50%, transparent 100%); }
+  .hv2-bleed__scrim { background: linear-gradient(180deg, color-mix(in srgb, var(--bg-3) 55%, transparent) 0%, transparent 14%); }
+  /* The copy brings its own ground, so wherever it lands it sits on --bg-3: a fade from 72px above its first line,
+     the width of the screen. Over the half-faded photo the breadcrumb measured 2.3:1 at 375x667 without it. */
+  .hv2--bleed .hv2-inner { position: relative; }
+  .hv2--bleed .hv2-inner::before { content: ""; position: absolute; z-index: -1; pointer-events: none;
+    top: -72px; bottom: -40px; left: -50vw; right: -50vw; background: linear-gradient(180deg, transparent, var(--bg-3) 72px); }
+}
+/* Phones: the breadcrumb takes --ink (it measured 3.2:1 over the lit parts of the zoomed photos at 360px wide). */
+@media (max-width: 767px) {
+  .hv2--bleed .dio-crumb a, .hv2--bleed .dio-crumb .sep, .hv2--bleed .dio-crumb [aria-current] { color: var(--ink); }
+}
+
+/* Home on desktop (user, 16 October 2026: "too zoomed in, doctor should be moved a bit more to the right", a gap
+   covered by a gradient of a matching colour): the photograph is drawn at 88% of the hero's height from its
+   bottom-right corner and fades out along its left and top edges into the hero's ground and scrim. */
+@media not all and (max-width: 980px) and (max-aspect-ratio: 1/1) {
+  .hv2--bleed.hb-home .hv2-bleed__photo img { position: absolute; right: 0; bottom: 0; width: auto; height: 88%; max-width: none; object-fit: fill;
+    -webkit-mask-image: linear-gradient(90deg, transparent, var(--bg) 30%), linear-gradient(180deg, transparent, var(--bg) 18%);
+    -webkit-mask-composite: source-in;
+            mask-image: linear-gradient(90deg, transparent, var(--bg) 30%), linear-gradient(180deg, transparent, var(--bg) 18%);
+            mask-composite: intersect; }
+}
+
+/* Per page. The industry photos' subjects stand right of centre, so the photo is anchored on the right where the
+   window is narrower than the photo (4:3). --hb-bright: Home's photo is lighter than the others (mean luma 115
+   against 36 to 57 on the right half), so it keeps its old .72; Dental's is the darkest (36), so it gets 1. */
+.hv2--bleed.hb-kpi                { --hb-pos: 72% 40%; }
+.hv2--bleed.hb-home               { --hb-bright: .72; }
+/* Home on portrait screens (user, 16 October 2026: "increase the size of the background image, to reduce the teal
+   gap"): its photo is the widest (16:9), so at full width it ended 80px above the copy on a 390x844 phone; it is at
+   least 38svh tall there, cropped at the sides around the tablet and the doctor (--hb-pos-p). */
+.hv2--bleed.hb-home               { --hb-ph: 38svh; --hb-pos-p: 35% 50%; }
+.hv2--bleed.hb-optometry          { --hb-pos: 100% 50%; }
+.hv2--bleed.hb-dental             { --hb-pos: 100% 30%; --hb-bright: 1; }
+.hv2--bleed.hb-med-spa            { --hb-pos: 100% 35%; }
+.hv2--bleed.hb-chiropractic       { --hb-pos: 100% 50%; }
+.hv2--bleed.hb-vet-clinic         { --hb-pos: 100% 35%; }
+.hv2--bleed.hb-pain-management    { --hb-pos: 100% 50%; }
+.hv2--bleed.hb-physical-therapy   { --hb-pos: 100% 20%; }
+.hv2--bleed.hb-urgent-care        { --hb-pos: 100% 50%; }
+
 /* Short screens: copy first, band below (Home's block, "A phone on its side..." above), at the heights where a hero
    with a breadcrumb no longer fits its copy under a 240px band (measured in three engines and both fonts: the trust
    line needs up to 749px below 480px wide, 783px from 480 to 767px and 718px from 768 to 980px). */
