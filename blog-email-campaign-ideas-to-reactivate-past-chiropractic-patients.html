@@ -666,6 +666,23 @@
     requestAnimationFrame(step);
   }
 
+  /* Home's numbers sit centred on phones: the counting number keeps the width of its final text (--count-w, in em
+     so it follows the font size, measured again once the fonts are in), so the number and its unit do not move
+     sideways as digits are added. The CSS uses it only in the centred phone layout. */
+  function holdWidth(c) {
+    var final = c.textContent;
+    function measure() {
+      var m = c.cloneNode(false); m.textContent = final;
+      m.style.cssText = 'position:absolute;visibility:hidden;min-width:0;white-space:nowrap';
+      c.parentNode.appendChild(m);
+      var fs = parseFloat(getComputedStyle(m).fontSize) || 1;
+      c.style.setProperty('--count-w', (m.getBoundingClientRect().width / fs).toFixed(4) + 'em');
+      m.remove();
+    }
+    measure();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(measure);
+  }
+
   /* elements that toggle .is-in when they enter (gauges, bounce bars, cliff cols, inflect curve) */
   var animSel = '[data-fcp], [data-bounce], [data-cliff], [data-inflect], [data-loop]';
 
@@ -694,6 +711,7 @@
     }, { threshold: 0.5, rootMargin: '0px 0px -15% 0px' });
     /* the markup carries the final number (shown without JS); count from zero once it scrolls in */
     document.querySelectorAll('.count').forEach(function (c) {
+      if (c.closest('.dsa__row')) holdWidth(c);
       c.textContent = fmt(0, parseInt(c.getAttribute('data-dec') || '0', 10)); countObs.observe(c);
     });
 

@@ -424,11 +424,17 @@ body { background: var(--bg-3); }
 @media (max-width: 900px) {
   .dstat--split .dsa { grid-template-columns: minmax(0, 1fr); gap: clamp(28px, 6vw, 44px); }
 }
+/* Phones (user, 16 October 2026: "these numbers should be center-aligned"): number and label centred in each row;
+   the glowing tick moves from the left edge to sit centred above the number; the counting number keeps its final
+   width (--count-w, set by the count-up script) and equal-width digits (WebKit and Firefox draw "0.0" wider than
+   "2.1"), so the centred number does not shift while it counts. */
 @media (max-width: 479px) {
-  .dsa__row { grid-template-columns: minmax(0, 1fr); gap: 6px; }
-  .dsa__row::before { top: clamp(30px, 9vw, 40px); }
-  .dsa__lbl { text-align: left; }
+  .dsa__row { grid-template-columns: minmax(0, 1fr); gap: 6px; justify-items: center; text-align: center;
+    padding: clamp(36px, 10vw, 44px) 0 clamp(18px, 5vw, 24px); }
+  .dsa__row::before { left: 50%; top: clamp(16px, 4.6vw, 20px); margin: 0 0 0 -4px; }
+  .dsa__lbl { text-align: center; }
   .dstat--split .dsa__row .dstat__big { font-size: clamp(3rem, 16vw, 3.8rem); }
+  .dsa__row .count { min-width: var(--count-w, 0px); text-align: right; font-variant-numeric: tabular-nums; }
 }
 @media (prefers-reduced-motion: reduce) {
   .dsa__row::after { width: 100%; transition: none; }
