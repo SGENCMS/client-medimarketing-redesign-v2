@@ -936,13 +936,15 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 .dshow__trust .lbl { font: 700 var(--fs-eyebrow)/1 var(--body); letter-spacing: .18em; text-transform: uppercase; color: var(--ink-2); margin-bottom: clamp(20px,2.4vw,28px); display: block; }
 .dshow__logos { display: flex; flex-wrap: wrap; justify-content: center; align-items: stretch;
   gap: clamp(12px,1.6vw,20px); margin: 0 auto; max-width: 900px; }
+/* The logos stand on the panel without cards (user, 19 October 2026: "remove the borders or cards for each logo"):
+   still dark grey, in colour on hover. */
 .dshow__logo-card { flex: 1 1 152px; max-width: 188px; min-width: 132px;
-  display: grid; place-items: center; padding: clamp(20px,2.4vw,30px) clamp(16px,2vw,24px);
-  border-radius: var(--r-control); background: var(--surface);
-  border: 1px solid var(--line-2); box-shadow: var(--shadow-card);
-  transition: transform var(--t-base) var(--ease), box-shadow var(--t-base) var(--ease), border-color var(--t-base) var(--ease); }
-.dshow__logo-card:hover { transform: translateY(-4px); border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-  box-shadow: var(--shadow-elev); }
+  display: grid; place-items: center; padding: clamp(10px,1.2vw,14px) clamp(12px,1.6vw,20px); }
+/* phones: each logo at its own width, so two or three share a row instead of one each */
+@media (max-width: 599px) {
+  .dshow__logos { gap: 14px 22px; }
+  .dshow__logo-card { flex: 0 0 auto; min-width: 0; max-width: none; padding: 6px 4px; }
+}
 
 .dshow__logo-card img { height: clamp(32px,4vw,46px); width: auto; max-width: 100%; object-fit: contain;
   display: block; filter: grayscale(1) brightness(.36) contrast(1.08); opacity: .95;
@@ -960,11 +962,26 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 .ddiff__copy h2 .accent { color: var(--accent-2); }
 .ddiff__copy > p { font: 400 var(--fs-body)/1.6 var(--body); color: var(--ink-2); margin: 0 0 22px; max-width: 50ch; }
 .ddiff__copy > p b { color: var(--ink); }
-.ddiff__stack { display: grid; gap: 12px; margin-bottom: 18px; }
-.ddiff__sw { display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: center;
-  padding: 14px 16px; border-radius: var(--r-control);
+/* Industry pages and Our Story (user, 19 October 2026, Medi Spa: "make this look more compact"): the eyebrow and
+   heading sit in a row across the plate (.ddiff__head), so the long heading sets on 2 lines instead of 5; below it the
+   copy and software cards on the left and the guarantees on the right come out about the same height. Home and The
+   2-KPI Method keep the heading in the copy column (theirs is short, and a row would make them taller). */
+.ddiff__head .eyebrow { margin-bottom: 16px; }
+.ddiff__head h2 { font: 800 var(--fs-h2)/1.05 var(--font); letter-spacing: -.02em; color: var(--ink); margin: 0; }
+.ddiff__head h2 .accent { color: var(--accent-2); }
+@media (max-width: 1023px) {
+  .ddiff__head { margin-bottom: calc(16px - clamp(28px, 3.4vw, 48px)); }   /* stacked: 16px to the copy, as before */
+}
+@media (min-width: 1024px) {
+  .ddiff__plate:has(> .ddiff__head) { grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); row-gap: clamp(24px, 2.6vw, 34px); }
+  .ddiff__head { grid-column: 1 / -1; max-width: 1000px; }
+  .ddiff__head h2 { font-size: clamp(2.2rem, 3.6vw, 3.2rem); text-wrap: balance; }
+}
+.ddiff__stack { display: grid; gap: 10px; margin-bottom: 18px; }
+.ddiff__sw { display: grid; grid-template-columns: 36px 1fr; gap: 12px; align-items: center;
+  padding: 11px 14px; border-radius: var(--r-control);
   background: color-mix(in srgb, var(--bg-2) 40%, transparent); border: 1px solid var(--line); }
-.ddiff__sw-ico { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 10px;
+.ddiff__sw-ico { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px;
   background: color-mix(in srgb, var(--accent) 13%, transparent); border: 1px solid color-mix(in srgb, var(--accent) 26%, transparent); color: var(--accent-2); }
 .ddiff__sw-ico svg { width: 20px; height: 20px; }
 .ddiff__sw .nm { font: 700 .98rem/1.2 var(--font); color: var(--ink); }
@@ -1030,6 +1047,33 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 .ddiff__sign .lbl { font: 600 .56rem/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--ink-3); }
 .ddiff__guar .risk { margin-top: auto; padding-top: 16px; font: 500 .82rem/1.4 var(--body); color: var(--ink-2); }
 .ddiff__guar--plain { justify-content: center; }
+/* Its height is its content's, centred beside the copy (user, 19 October 2026, Medi Spa: "too much space on both top
+   and bottom ... more sleek without changing the general layout"): it stretched to the copy's height, 911px for 447px
+   of content on the industry pages. */
+.ddiff__plate > .ddiff__guar--plain { align-self: center; }
+/* The full guarantee panel (Optometry: seal, four guarantees, the signed emblem). Optometry keeps its heading in the
+   copy column (user, 19 October 2026: "revert specifically for this ... but retain it being in a single viewport"):
+   from 1024px the plate fits one screen under the fixed header (682px tall in a 1680x810 window, 679px at 1024x768):
+   a wider copy column with a smaller balanced heading (3 lines, was 5), and tighter spacing in the panel. */
+@media (min-width: 1024px) {
+  .ddiff__plate:has(> .ddiff__guar:not(.ddiff__guar--plain)) {
+    grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr);
+    padding: clamp(24px, 3.4vh, 40px) clamp(28px, 3vw, 44px); gap: clamp(24px, 3vw, 40px); }
+  .ddiff__plate:has(> .ddiff__guar:not(.ddiff__guar--plain)) .ddiff__copy h2 { font-size: clamp(2rem, min(3.1vw, 5.2vh), 2.9rem); line-height: 1.04; margin-bottom: 12px; text-wrap: balance; }
+  .ddiff__plate:has(> .ddiff__guar:not(.ddiff__guar--plain)) .ddiff__copy .eyebrow { margin-bottom: 12px; }
+  .ddiff__plate:has(> .ddiff__guar:not(.ddiff__guar--plain)) .ddiff__copy > p { margin-bottom: 14px; }
+  .ddiff__plate:has(> .ddiff__guar:not(.ddiff__guar--plain)) .ddiff__stack { margin-bottom: 12px; gap: 8px; }
+  .ddiff__plate:has(> .ddiff__guar:not(.ddiff__guar--plain)) .ddiff__sw { padding-block: 9px; }
+  .ddiff__guar:not(.ddiff__guar--plain) { padding: clamp(18px, 2.6vh, 28px) clamp(20px, 2.2vw, 28px); }
+  .ddiff__guar:not(.ddiff__guar--plain) .ddiff__seal { width: 42px; height: 42px; margin-bottom: 12px; }
+  .ddiff__guar:not(.ddiff__guar--plain) .ddiff__seal svg { width: 22px; height: 22px; }
+  .ddiff__guar:not(.ddiff__guar--plain) h3 { font-size: clamp(1.3rem, 1.9vw, 1.6rem); margin-bottom: 12px; }
+  .ddiff__guar:not(.ddiff__guar--plain) .ddiff__badges { gap: 8px; }
+  .ddiff__guar:not(.ddiff__guar--plain) .ddiff__badge { padding: 9px 14px; }
+  .ddiff__guar:not(.ddiff__guar--plain) .ddiff__emblem { margin-top: 14px; padding: 14px 18px; }
+  .ddiff__guar:not(.ddiff__guar--plain) .ddiff__stamp { width: 74px; height: 74px; }
+  .ddiff__guar:not(.ddiff__guar--plain) .risk { padding-top: 12px; }
+}
 .ddiff__guar--plain .risk { margin-top: 0; }
 .ddiff__guar .risk b { color: var(--accent-2); }
 
