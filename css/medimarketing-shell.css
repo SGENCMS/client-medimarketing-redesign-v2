@@ -465,6 +465,29 @@ body { background: var(--bg-3); }
 .dkpi__lever { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--divider);
   font: 600 .9rem/1.45 var(--body); color: var(--ink); }
 .dkpi__lever b { color: var(--accent); }
+/* Industries, "Built for your specialty" (user, 19 October 2026: "more compact ... include images too on each card that
+   matches industry / specialty"): each card is a row: the specialty's photo (the natural-colour set of Home's specialty
+   selector, focal point per card in --pos) as a strip down its left side, and the tag, name, line and link beside it,
+   in less padding. The photo is decorative (the card's link text names the specialty). .dkpi__grid--spec: Industries only
+   (The 2-KPI Method's .dkpi__grid--hub cards have no photo and keep their layout). */
+.dkpi__grid--spec { gap: clamp(12px, 1.6vw, 18px); }
+.dkpi__grid--spec .dkpi__card { display: grid; grid-template-columns: clamp(96px, 32%, 140px) minmax(0, 1fr); padding: 0; overflow: hidden; }
+.hub__media { position: relative; overflow: hidden; }
+.hub__media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: var(--pos, 50% 50%);
+  filter: saturate(.92) brightness(.92); transition: transform .6s var(--ease); }
+.dkpi__grid--spec .dkpi__card:hover .hub__media img { transform: scale(1.06); }
+.hub__body { display: flex; flex-direction: column; min-width: 0; padding: clamp(14px, 1.5vw, 18px) clamp(14px, 1.6vw, 20px); }
+.hub__body .dkpi__tag { margin-bottom: 8px; padding: 5px 10px; font-size: .62rem; letter-spacing: .12em; max-width: 100%; }
+.hub__body .dkpi__abbr { font-size: clamp(1.15rem, 1.5vw, 1.4rem); line-height: 1.1; margin: 0; }
+.hub__body > p { margin: 4px 0 10px; font: 400 .9rem/1.4 var(--body); color: var(--ink-2); }
+.hub__body .dkpi__lever { padding-top: 10px; font-size: .84rem; }
+@media (prefers-reduced-motion: reduce) { .hub__media img { transition: none; } }
+/* narrower cards (3 columns at 1024 to 1279, 2 on tablets, phones): a narrower photo strip and a tighter tag, so the
+   longest tag ("Physical therapy near me") stays on one line */
+@media (max-width: 1279px) {
+  .dkpi__grid--spec .dkpi__card { grid-template-columns: clamp(84px, 27%, 130px) minmax(0, 1fr); }
+  .hub__body .dkpi__tag { letter-spacing: .08em; padding-inline: 8px; }
+}
 .dkpi__num { font: 900 clamp(1.5rem,2vw,1.9rem)/1 var(--font); color: var(--accent); }
 
 /* Home, "Patient acquisition": the specialty selector (.dkpi--select). The heading on the left with
@@ -540,7 +563,7 @@ body { background: var(--bg-3); }
   left: calc(-1 * var(--pad)); right: calc(-1 * var(--pad)); top: -100px; height: 720px;
   background: linear-gradient(180deg, transparent 0,
     color-mix(in srgb, var(--bg-3) 30%, transparent) 50px,
-    color-mix(in srgb, var(--bg-3) 62%, transparent) 100px,
+    color-mix(in srgb, var(--bg-3) 72%, transparent) 100px,
     color-mix(in srgb, var(--bg-3) 84%, transparent) 150px,
     color-mix(in srgb, var(--bg-3) 92%, transparent) 210px); }
 
@@ -787,13 +810,38 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 .dimp__caption { margin-top: clamp(18px,2.2vw,26px); text-align: center; font: 400 .8rem/1.4 var(--body); color: color-mix(in srgb, var(--ink-2) 60%, var(--ink-3)); }
 
 .dshow { padding-block: var(--pad); }
-.dshow .container { position: relative; z-index: 1; }
+/* Above the section's fades (z-index 2), so the Certified partners panel's shadow runs out over the bottom fade instead of
+   being covered by it in a straight line (user, 19 October 2026: "no cropped shadows"); its content never overlaps a fade. */
+.dshow .container { position: relative; z-index: 3; }
 /* Industry pages, "Websites built to sell" (user, 16 October 2026: "too narrow because we used too many lines, reduce to
    2-3 lines, both header and subtitles"): a wider heading block, so from 1024px the headline sets on 2 lines (was 4)
    and the intro on 2 or 3 even lines, by its length (was 3 to 4, the last often one or two words); balanced, so no
    short last line. Phones and upright tablets are already as wide as the screen allows. */
 .dshow.ecosystem-block .s-head { max-width: 1100px; }
 .dshow.ecosystem-block .s-head p { max-width: 1000px; text-wrap: balance; }
+/* "Websites built to sell" (8 industry pages; padding and heading spacing on Our Story's section too), user, 19 October
+   2026: "reduce spaces on top and bottom, just enough space ... so we can still fit it in a single viewport": the light
+   section's large top and bottom padding (258px / 224px at 1440) comes down to 56-88px / 80-88px, and from 1024px the
+   heading block and the two main browser mockups fit one screen under the fixed header (checked at 1680x810, 1440x900,
+   1280x800 and 1024x768 on all 8 pages): a tighter heading block (the heading and intro follow the screen height), and
+   flatter mockups (2:1 picture, 3:1 thumbnails, a wider text column, slimmer bars and captions, at most 1060px wide). */
+.dio.dshow { padding-top: clamp(56px, 6vw, 88px); padding-bottom: clamp(80px, 5.6vw, 88px); }   /* bottom: the partners panel's shadow reaches 72px, and the section clips */
+.dshow .s-head { margin-bottom: 0; }
+.dshow .s-head .eyebrow { margin-bottom: 10px; }
+.dshow .s-head h2 { font-size: clamp(2rem, min(3.6vw, 5vh), 3.2rem); margin-bottom: 10px; }
+.dshow__honest { margin-top: 6px; }
+.dshow .dshow__lead { margin-top: clamp(14px, 1.6vw, 20px); }   /* .dshow: beats the base .dshow__lead rule further down */
+@media (min-width: 1024px) {
+  .dshow .s-head p { font-size: min(var(--fs-lead), max(1rem, 2.3vh)); line-height: 1.45; }
+  .dshow__lead { max-width: 1060px; margin-inline: auto; }
+  .dshow__lead .bw__view { padding: clamp(12px, 1.4vw, 18px); }
+  .dshow__lead .bw__nav { margin-bottom: 10px; }
+  .dshow__lead .bw__hero { margin-bottom: 10px; grid-template-columns: 1.25fr .75fr; }
+  .dshow__lead .bw__art { aspect-ratio: 2 / 1; }
+  .dshow__lead .bw__frame-card .pic { aspect-ratio: 3 / 1; }
+  .dshow__lead .dshow__frame-cap { padding-block: 8px; }
+  .dshow__lead .bw__bar { padding-block: 7px; }
+}
 .dshow__honest { display: inline-flex; align-items: center; gap: .6em; margin: 14px auto 0;
   font: 600 .8rem/1.3 var(--body); color: var(--ink-2); padding: 8px 14px; border-radius: var(--r-pill);
   background: color-mix(in srgb, var(--accent) 8%, transparent); border: 1px solid var(--line-2); }
@@ -1468,6 +1516,12 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
   text-wrap: balance;
   text-shadow: 0 24px 80px rgba(0, 0, 0, .45);
 }
+/* Results (user, 19 October 2026: "Turn this into 2 lines") and Our Story (same day: "2 lines header and 1 line sub
+   format here"): the heading takes the full width at a size that keeps each of its two parts (split by its <br>) on
+   one line from 1024px; phones keep the wrapped heading. */
+.hv2-typographic:is(.hero-results, .hero-story) .container { max-width: var(--maxw); }   /* the typographic hero's 980px held it to 3-4 lines at 1440 */
+.hv2-typographic:is(.hero-results, .hero-story) h1 { max-width: none; font-size: clamp(2.4rem, min(5.2vw, 9vh), 4.9rem); }
+.hv2-typographic:is(.hero-results, .hero-story) .hv2-sub { max-width: none; }   /* "make this single line": one line wherever it fits */
 .hv2-typographic h1 .grad {
   background: var(--grad-text);
   -webkit-background-clip: text; background-clip: text;
@@ -1955,6 +2009,59 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
 .hv2--bleed.hb-physical-therapy   { --hb-pos: 100% 20%; }
 .hv2--bleed.hb-urgent-care        { --hb-pos: 100% 50%; }
 
+/* Book an Audit (user, 19 October 2026: option B of three, "make the image to next section transition seamless"): the
+   full-bleed photo hero, shorter, with the form section rising into its foot, so the form starts on the first screen.
+   The photo (supplied by the user) is brighter than the others (mean luma 164; Home 115), so it is drawn darker. The
+   hero's foot fades to see-through over --join (photo, scrim, grain and its ground), and the form section is
+   see-through (dio--blend), so both sides of the line show the same page background at any scroll position.
+   Industries uses the same photo and foot, at the full height of the other photo heroes (user, 19 October 2026:
+   "for the hero section can we also use the image we used in the book an audit page"); its directory below is see-through. */
+.hv2--bleed.hv2-typographic:is(.hb-book, .hb-industries).dh { --hb-pos: 62% 58%; --hb-bright: .56; --hb-pos-p: 62% 50%; --join: clamp(110px, 12vw, 180px);
+  background: linear-gradient(180deg, var(--bg) calc(100% - var(--join)), transparent); }
+.hv2--bleed:is(.hb-book, .hb-industries) .hv2-bleed__photo img { filter: saturate(.85) brightness(var(--hb-bright)); }
+.hv2--bleed:is(.hb-book, .hb-industries) > :is(.hv2-bleed__photo, .hv2-bleed__scrim, .hv2-grain) {
+  -webkit-mask-image: linear-gradient(180deg, #000 calc(100% - var(--join)), transparent);
+          mask-image: linear-gradient(180deg, #000 calc(100% - var(--join)), transparent); }
+/* Industries draws a crop of the same photo that stops above the two product boxes on the desk (at full height they sat
+   right under the buttons; on Book an Audit the rising form covers them). */
+.hv2--bleed.hv2-typographic.hb-industries.dh { --hb-pos: 60% 50%; --hb-pos-p: 60% 50%; }
+/* the trust line sits in the see-through foot, over the page background's soft glow at the lower left (ink-2 there
+   measured 3.9:1): --ink */
+.hv2--bleed.hb-industries .hv2-trust, .hv2--bleed.hb-industries .hv2-trust span { color: var(--ink); }
+@media not all and (max-width: 980px) and (max-aspect-ratio: 1/1) {
+  .hv2--bleed.hv2-typographic.hb-book.dh { min-height: clamp(520px, 74svh, 720px); padding-bottom: clamp(170px, 24vh, 230px); }
+  .dio.dbook.dbook--rise { margin-top: calc(-1 * clamp(130px, 19vh, 180px)); position: relative; z-index: 4; }
+}
+@media (max-width: 980px) and (max-aspect-ratio: 1/1) {
+  .hv2--bleed.hv2-typographic:is(.hb-book, .hb-industries).dh { background: linear-gradient(180deg, var(--bg-3) calc(100% - var(--join)), transparent); }
+}
+
+/* Blog (user, 19 October 2026: "for the blog page i would like you to use the same hero style as the specialty while
+   keeping the elements on it", then "use this image instead"): the full-bleed photo hero with the user's photo of a
+   clinician at a laptop (img/hero-blog-*.webp, from 2149741273.jpg), keeping the page's breadcrumb, eyebrow, heading,
+   line, topic chips and buttons in their order. She sits on the right, so the photo is anchored there, as the
+   industry photos are. Its box runs past the hero's right edge (--hb-over), so she sits further right while the
+   photo still covers the hero: where the screen is narrower than the photo (3:2: 1024 to 1194px tablets on their
+   side, a phone on its side), the heading's last word ran into her hair. 96px on screens squarer than 7:5, where
+   WebKit and Firefox set the heading wider than Chromium; her hair still ends inside the frame there. */
+.hv2--bleed.hb-blog { --hb-pos: 100% 6%; --hb-over: 64px; }   /* 6%: on wide, short screens the crop comes off the desk, not her head */
+@media (max-aspect-ratio: 7/5) { .hv2--bleed.hb-blog { --hb-over: 96px; } }
+@media not all and (max-width: 980px) and (max-aspect-ratio: 1/1) {
+  .hv2--bleed.hb-blog .hv2-bleed__photo img { width: calc(100% + var(--hb-over)); max-width: none; }
+}
+.hv2--bleed.hb-blog .dbf__filter { margin: 0; }
+/* Over the photo the see-through chips take a dark backing (the "Soon" chips measured 2.0 to 3.2:1 over the
+   stethoscope and the laptop without it, 4.5 to 4.7:1 with a 62% one); hover and the active chip keep their own fill. */
+.hv2--bleed.hb-blog .dbf__chip:not(.is-active, :hover) {
+  background: linear-gradient(color-mix(in srgb, var(--accent) 9%, transparent), color-mix(in srgb, var(--accent) 9%, transparent)),
+              color-mix(in srgb, var(--bg-3) 72%, transparent); }
+.hv2--bleed.hb-blog .dbf__chip.is-soon { background: color-mix(in srgb, var(--bg-3) 72%, transparent); }
+/* Portrait screens: the copy is taller than the other heroes' (nine chips), so the hero is taller than the screen and
+   the copy would start under the header, over the photo; it starts 80% of the way down the photo instead. */
+@media (max-width: 980px) and (max-aspect-ratio: 1/1) {
+  .hv2--bleed.hv2-typographic.hb-blog.dh { padding-top: max(clamp(88px, 12vh, 150px), 53.3vw); }
+}
+
 /* Short screens: copy first, band below (Home's block, "A phone on its side..." above), at the heights where a hero
    with a breadcrumb no longer fits its copy under a 240px band (measured in three engines and both fonts: the trust
    line needs up to 749px below 480px wide, 783px from 480 to 767px and 718px from 768 to 980px). */
@@ -2016,11 +2123,12 @@ html:not(.js) .dimp__chart .line { stroke-dashoffset: 0; }
   padding-top: calc(clamp(46px, 6.5vw, 84px) + clamp(22px, 3.4vw, 50px));
   padding-bottom: clamp(56px, 7vw, 100px);
 }
-.dkpi.dkpi--a-split .container { z-index: 3; }
+:is(.dkpi.dkpi--a-split, .dkpi.story-why) .container { z-index: 3; }
 /* The hexagon background pattern on this light section too (owner, 9 October 2026): the same drawing as
    the dark sections, darkened by a filter towards the light surface's deep teal so it reads on --bg. It sits
-   below the seams (z-index 1 < 2), stays clear of the top wave, and fades out towards the bottom. */
-.dio.dkpi--a-split::before {
+   below the seams (z-index 1 < 2), stays clear of the top wave, and fades out towards the bottom. Our Story's
+   "Why we exist" carries it the same way (user, 19 October 2026: "apply the hexagonal patterns here"). */
+:is(.dio.dkpi--a-split, .dio.story-why)::before {
   content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; opacity: var(--hex-a-light, .16);
   background: url(../img/hex-connections.webp) var(--hex-pos) / var(--hex-size) auto repeat-y;
   filter: brightness(.5) saturate(1.35);

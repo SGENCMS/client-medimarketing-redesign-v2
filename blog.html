@@ -145,23 +145,25 @@
 </aside>
 
 <main id="main">
-<section class="dio dbf dio--dark hero-filter">
-  <div class="dio__darkbed" aria-hidden="true"></div>
-  <div class="dio__glow" aria-hidden="true"></div>
+<section class="dio dh hv2-typographic hv2--bleed hb-blog hero-filter">
+  <div class="hv2-bleed__photo" aria-hidden="true"><img src="img/hero-blog-2000.webp" srcset="img/hero-blog-1000.webp 1000w, img/hero-blog-2000.webp 2000w" sizes="(max-width: 980px) and (max-aspect-ratio: 1/1) 100vw, (min-aspect-ratio: 2000/1335) 100vw, 150vh" width="2000" height="1335" alt="" loading="eager" fetchpriority="high" decoding="async"></div>
+  <div class="hv2-bleed__scrim" aria-hidden="true"></div>
+  <div class="hv2-grain" aria-hidden="true"></div>
 
   <div class="container">
-    <nav class="dio-crumb reveal" aria-label="Breadcrumb">
+    <div class="hv2-inner">
+    <nav class="dio-crumb hv2-rise" style="--i:0" aria-label="Breadcrumb">
       <a href="index.html">Home</a><span class="sep">/</span>
       <span aria-current="page">Blog</span>
     </nav>
 
-    <div class="s-head reveal">
-      <span class="eyebrow">Resources</span>
-      <h1>Medical and dental marketing, <span class="grad">explained.</span></h1>
-      <p>Practical guides on local SEO, site speed, and new-patient growth, from an agency with 500+ locations helped.</p>
-    </div>
+    <span class="dh__eyebrow hv2-rise" style="--i:1">Resources</span>
 
-    <div class="dbf__filter reveal" role="list" aria-label="Filter articles by topic">
+    <h1 class="hv2-rise" style="--i:2">Medical and dental marketing, <span class="grad">explained.</span></h1>
+
+    <p class="hv2-sub hv2-rise" style="--i:3">Practical guides on local SEO, site speed, and new-patient growth, from an agency with 500+ locations helped.</p>
+
+    <div class="dbf__filter hv2-rise" style="--i:4" role="list" aria-label="Filter articles by topic">
       <a class="dbf__chip is-active" href="#all-posts" role="listitem">All articles <span class="n">23</span></a>
       <a class="dbf__chip" href="#cat-chiropractic" role="listitem">Chiropractic <span class="n">8</span></a>
       <a class="dbf__chip" href="#cat-medspa" role="listitem">Med Spa <span class="n">5</span></a>
@@ -173,9 +175,10 @@
       <a class="dbf__chip" href="industries.html" role="listitem">By Industry <span class="arr">&rarr;</span></a>
     </div>
 
-    <div class="dbf__filter reveal" style="margin-top:18px">
+    <div class="hv2-actions hv2-rise" style="--i:5">
       <a class="btn btn-primary" href="book-an-audit.html">Book an Audit <span class="arr">&rarr;</span></a>
       <a class="btn btn-ghost" href="the-2-kpi-method.html">Learn More</a>
+    </div>
     </div>
   </div>
 </section>
@@ -222,12 +225,19 @@
   </div>
 </section>
 
-<section class="dio dpost dio--dark dio--blend topic-categories" id="all-posts">
+<section class="dio dpost dio--light dio--light-flat surface-light topic-categories" id="all-posts">
   <div class="container">
     <div class="s-head reveal">
       <span class="eyebrow">All articles</span>
       <h2>Browse the library <span class="grad">by industry.</span></h2>
       <p>23 published guides, grouped by the practices they speak to. The By-Industry taxonomy mirrors our Industries hub, where each vertical has its own growth page.</p>
+    </div>
+
+    <div class="dpost__filter reveal" role="group" aria-label="Filter articles by industry" hidden>
+      <button class="dbf__chip is-active" type="button" data-cat="all" aria-pressed="true">All articles <span class="n">23</span></button>
+      <button class="dbf__chip" type="button" data-cat="cat-chiropractic" aria-pressed="false">Chiropractic <span class="n">8</span></button>
+      <button class="dbf__chip" type="button" data-cat="cat-medspa" aria-pressed="false">Med Spa <span class="n">5</span></button>
+      <button class="dbf__chip" type="button" data-cat="cat-dental" aria-pressed="false">Dental <span class="n">10</span></button>
     </div>
 
     <div class="dpost__catlead reveal" id="cat-chiropractic">
@@ -543,6 +553,47 @@
     </div>
   </div>
 </section>
+
+<script>
+/* "Browse the library": the category selector (user, 19 October 2026: "for this section, can we please add a category
+   selector"). Each button shows one category's group (its lead row and cards) or all of them; the "more guides" card
+   always shows. The hero's topic links (#all-posts, #cat-...) pick the same category and bring the selector into view,
+   as hiding a group above their target would otherwise leave the page at the wrong place. Without JS the selector
+   stays hidden and every group shows. */
+(function () {
+  var bar = document.querySelector('.dpost__filter'); if (!bar) return;
+  var btns = Array.prototype.slice.call(bar.querySelectorAll('[data-cat]'));
+  var cats = btns.map(function (b) { return b.getAttribute('data-cat'); });
+  function pick(cat) {
+    btns.forEach(function (b, i) {
+      var on = cats[i] === cat;
+      b.setAttribute('aria-pressed', on ? 'true' : 'false'); b.classList.toggle('is-active', on);
+      var lead = cats[i] === 'all' ? null : document.getElementById(cats[i]);
+      if (lead) { var show = cat === 'all' || on; lead.hidden = !show; if (lead.nextElementSibling) lead.nextElementSibling.hidden = !show; }
+    });
+  }
+  function catOf(hash) { var c = hash === '#all-posts' ? 'all' : hash.slice(1); return cats.indexOf(c) >= 0 ? c : null; }
+  bar.hidden = false;
+  bar.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-cat]'); if (!b) return;
+    var cat = b.getAttribute('data-cat'); pick(cat);
+    if (history.replaceState) history.replaceState(null, '', cat === 'all' ? '#all-posts' : '#' + cat);
+  });
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest('a[href^="#"]'), cat = a && catOf(a.getAttribute('href')); if (!cat) return;
+    e.preventDefault(); pick(cat);
+    if (history.replaceState) history.replaceState(null, '', a.getAttribute('href'));
+    bar.scrollIntoView({ block: 'start' });
+  });
+  window.addEventListener('hashchange', function () {   /* back / forward, or a hash typed into the address bar */
+    var cat = catOf(location.hash); if (cat) { pick(cat); bar.scrollIntoView({ block: 'start' }); }
+  });
+  /* a link to a category: filter now; once loaded, the selector below the fixed header (the browser's own jump put the
+     category's heading under it; one tick after load, as WebKit makes its own jump after the load event) */
+  var start = catOf(location.hash);
+  if (start) { pick(start); window.addEventListener('load', function () { setTimeout(function () { bar.scrollIntoView({ block: 'start' }); }, 0); }); }
+})();
+</script>
 
 <section class="dio drb dio--dark resource-band">
   <div class="dio__darkbed" aria-hidden="true"></div>

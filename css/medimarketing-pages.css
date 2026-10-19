@@ -19,7 +19,36 @@
   background: color-mix(in srgb, var(--ink-3) 16%, transparent); }
 
 .rv { padding-block: var(--pad); }
-.rv .container { position: relative; z-index: 1; }
+/* Results, "Specialty cases, on the way." (user, 19 October 2026: "more compact ... too much space at top and bottom"):
+   the light section's padding (258px / 224px at 1440) comes down to 48-72px; the content sits above the section's
+   fades (z-index 3), which now reach into it. */
+:root { --rv-pad-b: clamp(72px, 5.6vw, 80px); --rv-next-pad-t: clamp(32px, 3.4vw, 48px); }
+.dio.rv.results-by-vertical { padding-top: clamp(48px, 5vw, 72px); padding-bottom: var(--rv-pad-b); }   /* bottom: the card's shadow reaches 72px and the section clips */
+/* ... laid out as a split (user, 19 October 2026: option A of three, "lets go with A"): heading, intro and the note on
+   the left, the "in progress" card on the right; stacked below 861px. */
+.rv__split { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 72px); align-items: center; max-width: 1080px; margin: 0 auto; }
+.rv__split .s-head { margin: 0; text-align: left; max-width: none; }
+.rv__split .s-head .eyebrow { justify-content: flex-start; }
+.rv__split .s-head h2 { font-size: clamp(2rem, 3.4vw, 3rem); }
+.rv__split .s-head p { margin: 0; max-width: 42ch; }
+.rv__split .s-head .rv__note { margin: clamp(14px, 1.8vw, 20px) 0 0; text-align: left; font-size: .86rem; }
+.rv__split .rv__grid.rv__grid--single { grid-template-columns: minmax(0, 1fr); margin: 0; }
+.rv__split .rv__card--soon .ico { margin-bottom: 12px; }
+@media (max-width: 860px) { .rv__split { grid-template-columns: minmax(0, 1fr); } }
+.rv .container { position: relative; z-index: 3; }
+/* Results, "Proven at scale" in the white version (user, 19 October 2026: "turn this into a white version instead, at
+   least for the results page"): the dark section turned white the way the white versus was (markup without the dark
+   bed and glow, .dio--light-flat keeps its layout), so with "Specialty cases" above it the two read as one light block.
+   Its top padding comes down so the two sections' paddings do not stack into one wide empty band (216px at 1680). */
+.dio.rv.results-by-vertical + .dio.dstat.dio--light { padding-top: var(--rv-next-pad-t); }
+/* A divider between the two (user, 19 October 2026: "apply the divider in between these sections"): the site's thin
+   rule (.dio__rule, as between The 2-KPI Method's two white sections), as wide as the content column, in the middle of
+   the gap between the content above and the eyebrow's letters below. The two paddings differ (80 / 48 px at 1440), so
+   it sits half their difference above the boundary, less 8px for the space the eyebrow's line box adds above its
+   letters (measured: 70 / 70 px at 1440, 58 / 56 on phones, in Chromium, WebKit and Firefox). */
+.dio.rv.results-by-vertical > .dio__rule--mid { bottom: calc((var(--rv-pad-b) - var(--rv-next-pad-t)) / 2 - 8px); }
+/* the chips' teal figures sat at 4.55:1 on the chip tint: a deeper teal (a mix of tokens) gives them margin */
+.dio.dstat.dio--light .dstat__chip b { color: color-mix(in srgb, var(--accent-2) 70%, var(--ink)); }
 .rv__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(16px, 2.4vw, 26px);
   margin-top: clamp(30px, 3.6vw, 46px); }
 .rv__grid.rv__grid--single { grid-template-columns: minmax(0, 560px); justify-content: center; }
@@ -107,6 +136,12 @@
 
 .dpin { padding-block: var(--pad); }
 .dpin .container { position: relative; z-index: 1; }
+/* Blog, "Featured this month" (user, 19 October 2026: "lets make this section more compact there's a lot of top and
+   bottom space"): the light section's padding (258px / 214px at 1440) comes down to Results' 48-72px on top and
+   72-80px below (the card's shadow reaches 72px and the section clips); the content sits above the top seam (z-index 3),
+   which is drawn in --bg over this --bg section and now reaches into it. */
+.dio.dpin.featured-pinned { padding-top: clamp(48px, 5vw, 72px); padding-bottom: var(--rv-pad-b); }
+.dpin.featured-pinned .container { z-index: 3; }
 .dpin__card { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 0; overflow: hidden; padding: 0; }
 .dpin__shot { position: relative; min-height: 320px; overflow: hidden; background: var(--surface-2); }
 .dpin__shot img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: center; display: block;
@@ -135,6 +170,24 @@
 
 .dpost { padding-block: var(--pad); }
 .dpost .container { position: relative; z-index: 1; }
+/* Blog, "Browse the library": the category selector (user, 19 October 2026: "for this section, can we please add a
+   category selector"), the hero's topic chips as toggle buttons; the pressed one takes the chips' active fill. It is
+   shown by the page's script (its space is kept while it is hidden, as Home's selector does); the groups it hides
+   take [hidden] over their own display. Scrolled to below the fixed header when a hero chip picks a category. */
+.dpost__filter { display: flex; flex-wrap: wrap; gap: 10px; scroll-margin-top: 100px; }
+.dpost__filter[hidden], .dpost__catlead[hidden], .dpost__grid[hidden] { display: none; }
+.js .dpost__filter[hidden] { display: flex; visibility: hidden; }
+.dpost__filter .dbf__chip { cursor: pointer; }
+.dpost__filter .dbf__chip[aria-pressed="true"] { cursor: default; }
+/* ... in a white version (user, 19 October 2026: "let's have this section in white version"), turned white the way
+   Results' "Proven at scale" was (dio--light dio--light-flat surface-light), so with "Featured this month" above it the
+   two read as one light block; its top padding comes down as that band's did, so the two paddings do not stack. */
+.dio.dpin.featured-pinned + .dio.dpost.dio--light { padding-top: var(--rv-next-pad-t); }
+/* On white, two small labels measured under 4.5:1: the active chip's count (white on the chip's white tint over the teal
+   fill, 4.2:1; hovered chips the same) and the categories' "n articles" (teal, 4.3:1 where the cards' shadow above reaches them). The count's
+   tint becomes a dark one, the article counts take --ink. */
+.dpost.surface-light :is(.dbf__chip.is-active, .dbf__chip:hover) .n { background: color-mix(in srgb, var(--ink) 40%, transparent); }
+.dpost.surface-light .dpost__catlead .n { color: var(--ink); }
 .dpost__catlead { display: flex; align-items: center; gap: 14px; margin: clamp(34px, 4vw, 50px) 0 clamp(18px, 2vw, 26px); }
 .dpost__catlead:first-of-type { margin-top: clamp(26px, 3vw, 38px); }
 .dpost__catlead h3 { font: 800 var(--fs-h3)/1.1 var(--font); letter-spacing: -.01em; color: var(--ink); margin: 0; white-space: nowrap; }
@@ -386,3 +439,280 @@ html:not(.js) .dloop__ring .arc { stroke-dashoffset: 0; }
 .darticle__figure { margin: 0 0 clamp(28px, 3.5vw, 44px); border-radius: var(--r-surface); overflow: hidden; box-shadow: var(--shadow-elev); }
 .darticle__figure img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
 .darticle__meta { margin: 10px 0 0; font: 500 .9rem/1.4 var(--body); color: var(--ink-2); }
+
+/* Our Story, "Four names, one journey." as a connected rail (user, 19 October 2026: option A of three, "lets go with
+   A, and include logos please"; lab: logs/labs/medimarketing-ourstory-timeline-options-2026-10-19/). One line runs
+   through four nodes, each holding its brand's mark; arrowheads point into nodes 02 to 04; step 04 (MediMarketing) is
+   the destination: a node on a white card the line runs into. Phones: the rail turns vertical on the left. */
+
+/* ---- section frame: the top wave seam's markup stays untouched (drawn in --bg over this --bg section, it reads as
+   nothing); the padding comes in, and the container is lifted above both seams so its content can sit over them ---- */
+.dio.dio--light.story-journey {
+  padding-top: clamp(50px, 3.9vw, 66px);
+  padding-bottom: clamp(48px, 3.8vw, 64px);
+}
+.dio.story-journey > .container { z-index: 3; }   /* above the seams (z-index 2), which are drawn in --bg over --bg */
+
+/* ---- heading block, centred, two lines ---- */
+.story-journey .s-head { max-width: 760px; margin-bottom: clamp(34px, 3vw, 48px); }
+.story-journey .s-head .eyebrow { margin-bottom: 14px; }
+.story-journey .s-head h2 { font-size: clamp(2.1rem, 4.4vw, 3.15rem); margin-bottom: 12px; }
+.story-journey .s-head h2 .grad { display: block; width: fit-content; margin-inline: auto; }
+.story-journey .s-head p { max-width: 46ch; text-wrap: balance; }
+
+/* ---- the rail ---- */
+.story-journey .tla {
+  --node: 52px;                         /* node diameter */
+  --ring: 8px;                          /* air between the line and a node */
+  --gap: clamp(20px, 2.2vw, 34px);      /* between columns */
+  --card: clamp(18px, 1.5vw, 24px);     /* the destination card's inset */
+  --line-from: color-mix(in srgb, var(--accent) 20%, transparent);
+  --line-to: var(--accent);
+  position: relative; list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: repeat(5, auto);
+  column-gap: var(--gap); row-gap: 0;
+}
+/* the line: from node 01's centre to column 4's left edge (the card's edge); the card carries its last stretch */
+.story-journey .tla::before {
+  content: ""; position: absolute; pointer-events: none;
+  top: calc(var(--node) / 2 - 1px); left: calc(var(--node) / 2); right: calc(25% - var(--gap) * .75); height: 2px; border-radius: 2px;
+  background: linear-gradient(90deg, var(--line-from), var(--line-to) 78%);
+}
+.story-journey .tla__step {
+  position: relative; min-width: 0;
+  display: grid; grid-row: span 5; grid-template-rows: subgrid; justify-items: start; align-content: start;
+}
+
+/* nodes */
+.story-journey .tla__node {
+  position: relative; display: grid; place-items: center;
+  width: var(--node); height: var(--node); border-radius: 50%;
+  font: 800 1rem/1 var(--font); letter-spacing: .02em; color: var(--accent);
+  background: var(--surface);
+  border: 1.5px solid color-mix(in srgb, var(--accent) 38%, transparent);
+  box-shadow: 0 0 0 var(--ring) var(--bg), var(--shadow-glow);
+}
+/* arrowheads into nodes 02, 03 and 04, on the line, just before each node */
+.story-journey .tla__step + .tla__step .tla__node::before {
+  content: ""; position: absolute; top: 50%; right: calc(100% + var(--ring) + 2px);
+  width: 9px; height: 9px; margin-top: -5.5px;
+  border-top: 2px solid var(--accent); border-right: 2px solid var(--accent); border-radius: 0 2px 0 0;
+  transform: rotate(45deg);
+}
+
+/* entry text */
+.story-journey .tla__tag {
+  margin-top: 19px;
+  font: 700 .72rem/1 var(--body); letter-spacing: .16em; text-transform: uppercase; color: var(--accent);
+}
+.story-journey .tla__name {
+  margin: 9px 0 0; align-self: end;
+  font: 800 clamp(1.12rem, 1.24vw, 1.3rem)/1.14 var(--font); letter-spacing: -.012em; color: var(--ink);
+  text-wrap: balance;
+}
+.story-journey .tla__text {
+  margin: 8px 0 0;
+  font: 400 clamp(.92rem, .9vw, .98rem)/1.6 var(--body); color: var(--ink-2);
+}
+.story-journey .tla__url {
+  margin: 14px 0 0; padding-top: 11px; align-self: start; justify-self: stretch;
+  border-top: 1px solid var(--divider);
+  font: 600 .88rem/1.4 var(--body); color: var(--ink);
+}
+
+/* ---- the destination: step 04 ---- */
+.story-journey .tla__step--dest { isolation: isolate; padding: 0 var(--card) var(--card); }
+.story-journey .tla__step--dest::after {   /* the card, rising above the node */
+  content: ""; position: absolute; z-index: -1; inset: calc(-1 * var(--card)) 0 0 0;
+  border-radius: calc(var(--r-surface) + 4px);
+  background:
+    radial-gradient(120% 70% at 20% 0, color-mix(in srgb, var(--accent) 9%, transparent), transparent 62%),
+    var(--surface);
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+  box-shadow: var(--shadow-elev);
+}
+.story-journey .tla__step--dest::before {  /* the line's last stretch, from the card's edge into node 04 */
+  content: ""; position: absolute; pointer-events: none;
+  top: calc(var(--node) / 2 - 1px); left: 0; width: calc(var(--card) - var(--ring)); height: 2px;
+  background: var(--line-to);
+}
+.story-journey .tla__step--dest .tla__node {
+  color: var(--on-accent); border-color: transparent;
+  background: var(--grad-accent);
+  box-shadow: 0 0 0 var(--ring) var(--surface), 0 0 0 calc(var(--ring) + 1px) color-mix(in srgb, var(--accent) 26%, transparent), var(--shadow-glow);
+}
+.story-journey .tla__step--dest .tla__node::after {   /* a slow halo: where the line leads */
+  content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 40%, transparent);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .story-journey .tla__step--dest .tla__node::after { animation: tla-halo 2.8s var(--ease-out) infinite; }
+}
+@keyframes tla-halo {
+  0%   { box-shadow: 0 0 0 0 color-mix(in srgb, var(--accent) 38%, transparent); }
+  70%  { box-shadow: 0 0 0 18px color-mix(in srgb, var(--accent) 0%, transparent); }
+  100% { box-shadow: 0 0 0 18px color-mix(in srgb, var(--accent) 0%, transparent); }
+}
+
+/* ---- owner notes, side by side under the rail ---- */
+.story-journey .tla__notes {
+  display: grid; grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); gap: 12px; align-items: stretch;
+  margin-top: clamp(26px, 2.6vw, 36px);
+}
+.story-journey .tla__notes .owner-ph { margin: 0; }
+
+/* ---- phones and narrow tablets: the rail turns vertical on the left (below 940px the four columns get too narrow
+   for the destination card's inset) ---- */
+@media (max-width: 940px) {
+  .story-journey .s-head { margin-bottom: 30px; }
+  .story-journey .tla {
+    --node: 44px; --ring: 6px; --gap: 30px; --card: 14px; --col: 16px;
+    display: flex; flex-direction: column; gap: var(--gap);
+    padding-left: var(--card); max-width: 640px; margin-inline: auto;
+  }
+  .story-journey .tla::before {   /* the line runs down through the nodes; step 04's card covers its tail */
+    top: calc(var(--node) / 2); bottom: 0; left: calc(var(--card) + var(--node) / 2 - 1px); right: auto;
+    width: 2px; height: auto;
+    background: linear-gradient(180deg, var(--line-from), var(--line-to) 82%);
+  }
+  .story-journey .tla__step {
+    grid-template-columns: var(--node) minmax(0, 1fr); grid-template-rows: none; grid-row: auto;
+    column-gap: var(--col); justify-items: start;
+  }
+  .story-journey .tla__node { grid-column: 1; grid-row: 1 / span 4; align-self: start; }
+  .story-journey .tla__step > :not(.tla__node) { grid-column: 2; }
+  .story-journey .tla__tag { margin-top: 5px; }
+  .story-journey .tla__name { margin-top: 7px; align-self: start; font-size: 1.28rem; }
+  .story-journey .tla__text { margin-top: 8px; font-size: .95rem; }
+  .story-journey .tla__url { margin-top: 12px; padding-top: 10px; justify-self: stretch; }
+  /* arrowheads point down into nodes 02 to 04 */
+  .story-journey .tla__step + .tla__step .tla__node::before {
+    top: auto; right: auto; left: 50%; bottom: calc(100% + var(--ring) + 2px);
+    margin: 0 0 0 -5.5px; transform: rotate(135deg);
+  }
+  /* the destination card: from the content edge, the node stays on the line */
+  /* it rises 20px above node 04, so the arrowhead into it sits inside the card */
+  .story-journey .tla__step--dest { --card-top: 20px; padding: 0 var(--card) var(--card) 0; margin-top: 6px; }
+  .story-journey .tla__step--dest::after { inset: calc(-1 * var(--card-top)) 0 0 calc(-1 * var(--card)); }
+  .story-journey .tla__step--dest::before {
+    top: calc(-1 * var(--card-top)); left: calc(var(--node) / 2 - 1px); width: 2px; height: calc(var(--card-top) - var(--ring));
+  }
+  .story-journey .tla__notes { grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 28px; max-width: 640px; margin-inline: auto; }
+}
+
+/* ---- logos in the nodes (user, 19 October 2026: "lets go with A, and include logos please"): each brand's mark in
+   its node, as on the client's pitch deck (pages 2 to 5). The two purple discs fill their node; Floss & Found and
+   MediMarketing sit on white. The image is rounded, not the node: the arrowheads are drawn just outside the node.
+   The names stay in the h3s, so the marks are decorative (alt=""). ---- */
+.story-journey .tla { --node: 64px; }
+.story-journey .tla__node img { display: block; border-radius: 50%; }
+.story-journey .tla__node--fill { border: 0; background: transparent; }
+.story-journey .tla__node--fill img { width: 100%; height: 100%; }
+.story-journey .tla__node--mark { background: var(--surface); }
+.story-journey .tla__node--mark img { width: 64%; height: 64%; object-fit: contain; border-radius: 0; }
+.story-journey .tla__step--dest .tla__node { background: var(--surface); border: 2px solid var(--accent); }
+.story-journey .tla__step--dest .tla__node img { width: 68%; height: 68%; }
+@media (max-width: 940px) {
+  .story-journey .tla { --node: 52px; }
+}
+
+/* Our Story, "Why we exist" (user, 19 October 2026: "2 lines header 1 line sub"): the heading block takes the full
+   width, so the heading's two parts (split by its <br>) each sit on one line; the 150-character subtitle fits one
+   line of the 1144px column only at 15.4px or less, so from 1280px it is set at 15px on one line, and keeps the
+   lead size on two lines below that. The owner note keeps its width. */
+.story-why .s-head.center { max-width: none; }
+@media (max-width: 767px) { .story-why .s-head h2 br { display: none; } }   /* phones wrap the heading naturally (3 lines, not 4) */
+.story-why .s-head .owner-ph { max-width: 720px; margin-inline: auto; }
+.story-why .s-head > p:not(.owner-ph) { max-width: none; }   /* 2 lines from 1024px instead of 3 */
+@media (min-width: 1280px) { .story-why .s-head > p:not(.owner-ph) { font-size: .9375rem; } }
+/* The hexagons (shell.css, the light split's pattern) keep to the sides here: the heading block is centred and full
+   width, so the middle of the drawing is masked clear. They fade in only below the top seam (wave + fade, which
+   ends in solid --bg): fading in above that showed a step where the seam's fade ended. */
+.dio.story-why { --why-seam: calc(clamp(46px, 6.5vw, 84px) + clamp(96px, 13vw, 168px)); }
+.dio.story-why::before {
+  -webkit-mask-image: linear-gradient(180deg, transparent var(--why-seam), var(--bg) calc(var(--why-seam) + 120px)),
+                      radial-gradient(40% 56% at 50% 34%, transparent 0%, transparent 66%, var(--bg) 100%);
+          mask-image: linear-gradient(180deg, transparent var(--why-seam), var(--bg) calc(var(--why-seam) + 120px)),
+                      radial-gradient(40% 56% at 50% 34%, transparent 0%, transparent 66%, var(--bg) 100%);
+}
+
+/* Our Story, "Five values behind every account." as Feature + four (user, 19 October 2026: option B of three, "give
+   me layout options for these cards that utilizes the entire space", then "B"; lab:
+   logs/labs/medimarketing-ourstory-values-options-2026-10-19/). Value 01 is one tall feature card down the left (two
+   rows high), values 02 to 05 a 2x2 beside it, so the five cards make one full-width rectangle with no empty cell. The
+   head is a split row (heading left, intro right) and the two owner notes sit side by side, so every row runs the
+   content width and the section fits one 1680x810 screen. The outlined numerals repeat each card's own "Value 0n"
+   tag number (aria-hidden). */
+.story-values.dkpi { padding-block: clamp(44px, 6.4vh, 72px); }
+
+/* head: eyebrow + two-line heading on the left, the intro on the right, sharing a bottom line */
+.story-values .vlb__head { max-width: none; margin: 0 0 clamp(22px, 3.4vh, 34px); display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: clamp(24px, 4vw, 64px); align-items: end; }
+.story-values .vlb__title .eyebrow { display: flex; margin: 0 0 14px; }
+.story-values .vlb__head h2 { font-size: clamp(2.1rem, min(4vw, 6.4vh), 3.2rem); line-height: 1.04; margin: 0; }
+.story-values .vlb__head .vlb__intro { margin: 0; max-width: 46ch; justify-self: end; padding-bottom: .2em; text-wrap: balance;
+  color: color-mix(in srgb, var(--ink-2) 70%, var(--ink)); }
+
+/* the five: one rectangle */
+.story-values .vlb__grid { list-style: none; margin: 0; padding: 0; display: grid;
+  grid-template-columns: minmax(0, 1.16fr) repeat(2, minmax(0, 1fr)); gap: clamp(12px, 1.2vw, 18px); }
+.story-values .vlb__card { margin: 0; min-width: 0; padding: clamp(20px, 1.5vw, 24px) clamp(20px, 1.7vw, 26px); display: flex; flex-direction: column; }
+.story-values .vlb__card .dkpi__tag { margin: 0 0 14px; }
+/* the name and its sentence sit on the card's bottom edge, so a row's text ends on one line and the room is under the numeral */
+.story-values .vlb__card > .vlb__name { margin-top: auto; }
+.story-values .vlb__name { font: 800 clamp(1.08rem, 1.25vw, 1.3rem)/1.16 var(--font); letter-spacing: -.012em; color: var(--ink); margin: 0 0 8px; }
+.story-values .vlb__card > p { font: 400 clamp(.9rem, .95vw, 1rem)/1.55 var(--body); color: var(--ink-2); margin: 0; text-wrap: pretty; }
+
+/* the outlined numeral: decorative, top right, on the tag's line */
+.story-values .vlb__num { position: absolute; z-index: 0; top: clamp(14px, 1.2vw, 18px); right: clamp(18px, 1.6vw, 24px);
+  font: 900 clamp(2.2rem, 2.6vw, 2.75rem)/.8 var(--font); letter-spacing: -.03em; color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--accent) 46%, transparent); pointer-events: none; user-select: none; }
+
+/* the feature: Value 01, taller ground, larger heading, the large numeral */
+.story-values .vlb__card--feat.glass { grid-row: span 2; justify-content: space-between; padding: clamp(24px, 2.4vw, 38px);
+  padding-top: clamp(20px, 1.5vw, 24px);   /* the small cards' top padding: the top row's three pills share one line */
+  border-color: color-mix(in srgb, var(--glow) 32%, transparent);
+  background:
+    radial-gradient(85% 60% at 100% 0, color-mix(in srgb, var(--glow) 15%, transparent), transparent 64%),
+    radial-gradient(90% 55% at 0 100%, color-mix(in srgb, var(--accent) 11%, transparent), transparent 70%),
+    color-mix(in srgb, var(--bg-2) 80%, transparent); }
+.story-values .vlb__card--feat .vlb__num { top: clamp(18px, 2vw, 32px); right: clamp(20px, 2.2vw, 34px);
+  font-size: clamp(6rem, 12.4vw, 12rem); -webkit-text-stroke: 1.5px color-mix(in srgb, var(--glow) 58%, transparent); }
+.story-values .vlb__card--feat .vlb__name { font: 900 clamp(1.9rem, 2.8vw, 2.7rem)/1.02 var(--font); letter-spacing: -.025em; margin: 0 0 14px; max-width: 11ch; }
+.story-values .vlb__card--feat .vlb__body p { font: 400 var(--fs-lead)/1.5 var(--body); color: color-mix(in srgb, var(--ink-2) 55%, var(--ink)); margin: 0; max-width: 24ch; }
+.story-values .vlb__card--feat .vlb__body::before { content: ""; display: block; width: 44px; height: 2px; margin-bottom: clamp(14px, 2vh, 20px);
+  border-radius: 2px; background: var(--grad-accent); }
+
+/* the two owner notes: side by side, the full width */
+.story-values .vlb__notes { display: grid; grid-template-columns: minmax(0, 1.16fr) repeat(2, minmax(0, 1fr)); gap: clamp(12px, 1.2vw, 18px); margin-top: clamp(12px, 1.2vw, 18px); }
+.story-values .vlb__notes .owner-ph:last-child { grid-column: span 2; }   /* on the cards' columns: the gutter between the notes falls under a card gutter */
+.story-values .vlb__notes .owner-ph { margin: 0; }
+
+/* tablets: the feature runs the full width on top (heading left, numeral right), the four as a 2x2 below */
+@media (max-width: 880px) {
+  .story-values .vlb__head { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+  .story-values .vlb__head h2 { max-width: 16ch; }   /* two lines here too ("Five values behind / every account.") */
+  .story-values .vlb__notes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .story-values .vlb__notes .owner-ph:last-child { grid-column: auto; }
+  .story-values .vlb__head .vlb__intro { justify-self: start; max-width: 52ch; text-wrap: pretty; }
+  .story-values .vlb__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .story-values .vlb__card--feat.glass { grid-row: auto; grid-column: 1 / -1; min-height: 0; gap: 28px; }
+  .story-values .vlb__card--feat .vlb__name { max-width: 14ch; }
+  .story-values .vlb__card--feat .vlb__body p { max-width: 32ch; }
+}
+
+/* phones: the feature first, then the four as compact cards, one under the other */
+@media (max-width: 600px) {
+  .story-values.dkpi { padding-block: 56px; }
+  .story-values .vlb__head h2 { font-size: clamp(2rem, 9vw, 2.4rem); }
+  .story-values .vlb__grid { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .story-values .vlb__card { padding: 20px 20px 22px; }
+  .story-values .vlb__card--feat.glass { padding: 24px 22px 26px; gap: 56px; }
+  .story-values .vlb__card--feat .vlb__num { font-size: 6.5rem; top: 20px; right: 20px; }
+  .story-values .vlb__card--feat .vlb__name { font-size: clamp(1.8rem, 8.4vw, 2.1rem); }
+  .story-values .vlb__card--feat .vlb__body p { font-size: 1.06rem; }
+  .story-values .vlb__num { font-size: 2.3rem; top: 16px; right: 18px; }
+  .story-values .vlb__name { font-size: 1.16rem; }
+  .story-values .vlb__card > p { font-size: .95rem; }
+  .story-values .vlb__notes { grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 12px; }
+}
